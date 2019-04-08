@@ -1,33 +1,34 @@
 package eu.espeo.ipg
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import eu.espeo.ipgcashierlib.IpgPaymentCallback
+import eu.espeo.ipgcashierlib.IpgPaymentProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : IpgPaymentCallback() {
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private val paymentProcessor by lazy { IpgPaymentProcessor(666) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener {
-            startActivityForResult(Intent(this, PaymentActivity::class.java), PaymentActivity.PAYMENT_REQUEST_CODE)
+            paymentProcessor.startPaymentProcess(this)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
-            PaymentActivity.PAYMENT_REQUEST_CODE -> {
-                when(resultCode) {
-                    PaymentActivity.PAYMENT_RESULT_SUCCESS -> PaymentSuccessfulDialog().show(supportFragmentManager, "")
-                    PaymentActivity.PAYMENT_RESULT_CANCELLED -> Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show()
-                    PaymentActivity.PAYMENT_RESULT_FAILED -> PaymentFailedDialog().show(supportFragmentManager, "")
-                }
-            }
-        }
+    override fun paymentSuccessful() {
+        PaymentSuccessfulDialog().show(supportFragmentManager, "")
     }
+
+    override fun paymentCancelled() {
+        Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun paymentFailed() {
+        PaymentFailedDialog().show(supportFragmentManager, "")
+    }
+
 }
