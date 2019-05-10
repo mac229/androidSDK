@@ -1,13 +1,18 @@
 package eu.espeo.ipgcashierlib
 
-class IpgPaymentProcessor(
-    private val merchantId: Long
-) {
+import androidx.fragment.app.FragmentManager
 
-    fun startPaymentProcess(ipgPaymentCallback: IpgPaymentCallback) {
-        val transaction = ipgPaymentCallback.supportFragmentManager.beginTransaction()
-        transaction.addToBackStack(null)
-        PaymentDialogFragment().show(transaction, "PaymentDialogFragment")
+class IpgPaymentProcessor(private val merchantId: Long) {
+
+    fun startPaymentProcess(fragmentManager: FragmentManager) {
+        fragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .add(PaymentDialogFragment(), TAG)
+            .commit()
     }
 
+    companion object {
+        private const val TAG = "PaymentDialogFragment"
+    }
 }

@@ -3,4 +3,5 @@
     <string name="start_payment_process">Start payment process</string>
     <string name="payment_successful">Payment successful</string>
     <string name="payment_failed">Payment failed</string>
+    <string name="payment_cancelled">Payment cancelled</string>
 </resources>
