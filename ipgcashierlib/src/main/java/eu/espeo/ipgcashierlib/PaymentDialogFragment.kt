@@ -11,7 +11,7 @@ import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
 
 @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-class PaymentFragment: DialogFragment() {
+class PaymentDialogFragment: DialogFragment() {
 
     private lateinit var paymentCallback: IpgPaymentCallback
 
@@ -19,8 +19,6 @@ class PaymentFragment: DialogFragment() {
         WebView(context).apply {
             settings.javaScriptEnabled = true
             addJavascriptInterface(JSInterface(context), "JSInterface")
-
-            loadUrl("https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html")
         }
     }
 
@@ -45,15 +43,23 @@ class PaymentFragment: DialogFragment() {
         }
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         paymentCallback = (context as? IpgPaymentCallback)
             ?: throw NotImplementedError("Calling activity must implement IpgPaymentCallback")
     }
 
+    override fun getTheme(): Int {
+        return R.style.PaymentDialogStyle
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return webView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        webView.loadUrl("https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html")
     }
 
 }

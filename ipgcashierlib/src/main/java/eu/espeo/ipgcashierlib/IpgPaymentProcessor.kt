@@ -5,7 +5,9 @@ class IpgPaymentProcessor(
 ) {
 
     fun startPaymentProcess(ipgPaymentCallback: IpgPaymentCallback) {
-        PaymentFragment().showNow(ipgPaymentCallback.supportFragmentManager, "PaymentFragment")
+        val transaction = ipgPaymentCallback.supportFragmentManager.beginTransaction()
+        transaction.addToBackStack(null)
+        PaymentDialogFragment().show(transaction, "PaymentDialogFragment")
     }
 
 }

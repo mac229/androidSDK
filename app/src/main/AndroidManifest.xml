@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="eu.espeo.ipgcashierlib.PaymentFragment"/>
+        <activity android:name="eu.espeo.ipgcashierlib.PaymentDialogFragment"/>
     </application>
 
 </manifest>
