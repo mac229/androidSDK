@@ -1,22 +1,27 @@
-package eu.espeo.ipg
+package eu.espeo.ipg.app
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import eu.espeo.ipg.R
 import eu.espeo.ipgcashierlib.IpgPaymentCallback
 import eu.espeo.ipgcashierlib.IpgPaymentProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), IpgPaymentCallback {
 
-    private val paymentProcessor by lazy { IpgPaymentProcessor(MERCHANT_ID) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        startPaymentButton.setOnClickListener {
-            paymentProcessor.startPaymentProcess(supportFragmentManager)
-        }
+        startPaymentButton.setOnClickListener { fetchToken() }
+    }
+
+    fun fetchToken() {
+        
+    }
+
+    private fun startPaymentProcess(token: String) {
+        IpgPaymentProcessor().startPaymentProcess(supportFragmentManager, MERCHANT_ID, token)
     }
 
     override fun paymentSuccessful() {
