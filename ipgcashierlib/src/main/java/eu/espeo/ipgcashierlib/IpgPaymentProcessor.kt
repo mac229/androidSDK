@@ -2,13 +2,13 @@ package eu.espeo.ipgcashierlib
 
 import androidx.fragment.app.FragmentManager
 
-class IpgPaymentProcessor(private val merchantId: Long) {
+class IpgPaymentProcessor {
 
-    fun startPaymentProcess(fragmentManager: FragmentManager) {
+    fun startPaymentProcess(fragmentManager: FragmentManager, merchantId: Long, token: String) {
         fragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .add(PaymentDialogFragment(), TAG)
+            .add(PaymentDialogFragment.newInstance(merchantId, token), TAG)
             .commit()
     }
 
