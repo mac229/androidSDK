@@ -7,10 +7,18 @@ import eu.espeo.ipg.R
 import eu.espeo.ipgcashierlib.IpgPaymentCallback
 import eu.espeo.ipgcashierlib.IpgPaymentProcessor
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), IpgPaymentCallback {
+class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
 
-    private val repository by lazy { MainRepository() }
+    private val job by lazy { Job() }
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    private val repository by lazy { MainRepository(coroutineContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +52,7 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback {
 
     override fun onPause() {
         super.onPause()
-        repository.cancelJob()
+        job.cancel()
     }
 
     companion object {

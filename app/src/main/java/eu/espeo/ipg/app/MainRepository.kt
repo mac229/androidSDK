@@ -1,28 +1,25 @@
 package eu.espeo.ipg.app
 
 import eu.espeo.ipg.api.Communication
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Maciej Kozłowski on 2019-05-10.
  */
-class MainRepository {
+class MainRepository(override val coroutineContext: CoroutineContext) : CoroutineScope {
 
     private val apiService = Communication.apiService
-    private var job: Job? = null
 
     fun fetchToken(customerId: String, merchantId: Long, onSuccess: (String) -> Unit, onError: () -> Unit) {
-        job = CoroutineScope(Dispatchers.Main).launch {
+        launch {
             try {
-                val result = withContext(Dispatchers.IO) { apiService.getToken(customerId, merchantId).await() }
+                val result = apiService.getToken(customerId, merchantId).await()
                 onSuccess(result)
             } catch (exception: Exception) {
                 onError()
             }
         }
-    }
-
-    fun cancelJob() {
-        job?.cancel()
     }
 }
