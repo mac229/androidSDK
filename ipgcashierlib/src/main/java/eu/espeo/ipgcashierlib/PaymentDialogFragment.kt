@@ -2,6 +2,7 @@ package eu.espeo.ipgcashierlib
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +39,18 @@ class PaymentDialogFragment: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        webView.loadUrl(URL)
+
+        val merchantId = arguments!!.getLong(EXTRA_MERCHANT_ID)
+        val token = arguments!!.getString(EXTRA_TOKEN)
+
+        val url = Uri.parse(URL)
+            .buildUpon()
+            .appendQueryParameter(MERCHANT_ID, merchantId.toString())
+            .appendQueryParameter(TOKEN, token)
+            .build()
+            .toString()
+
+        webView.loadUrl(url)
     }
 
     private inner class JSInterface {
@@ -63,6 +75,19 @@ class PaymentDialogFragment: DialogFragment() {
     }
 
     companion object {
-        private const val URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
+        private const val URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html?stylesSheetUrl=orlen.css"
+
+        private const val MERCHANT_ID = "merchantId"
+        private const val TOKEN = "token"
+
+        private const val EXTRA_MERCHANT_ID = "extra_merchant_id"
+        private const val EXTRA_TOKEN = "extra_token"
+
+        fun newInstance(merchantId: Long, token: String) = PaymentDialogFragment().apply {
+            arguments = Bundle().apply {
+                putLong(EXTRA_MERCHANT_ID, merchantId)
+                putString(EXTRA_TOKEN, token)
+            }
+        }
     }
 }
