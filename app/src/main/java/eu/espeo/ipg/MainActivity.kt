@@ -20,15 +20,15 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback {
     }
 
     override fun paymentSuccessful() {
-        PaymentSuccessfulDialog().show(supportFragmentManager, "")
+        PaymentSuccessfulDialog().show(supportFragmentManager, null)
     }
 
     override fun paymentCancelled() {
-        Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, R.string.payment_cancelled, Toast.LENGTH_SHORT).show()
     }
 
     override fun paymentFailed() {
-        PaymentFailedDialog().show(supportFragmentManager, "")
+        PaymentFailedDialog().show(supportFragmentManager, null)
     }
 
     companion object {
