@@ -1,15 +1,15 @@
 package eu.espeo.ipgcashierlib
 
 import android.webkit.JavascriptInterface
-import androidx.appcompat.app.AppCompatActivity
 
-abstract class IpgPaymentCallback: AppCompatActivity() {
-    @JavascriptInterface
-    abstract fun paymentSuccessful()
+interface IpgPaymentCallback {
 
     @JavascriptInterface
-    abstract fun paymentCancelled()
+    fun paymentSuccessful()
 
     @JavascriptInterface
-    abstract fun paymentFailed()
+    fun paymentCancelled()
+
+    @JavascriptInterface
+    fun paymentFailed()
 }

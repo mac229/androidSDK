@@ -1,21 +1,21 @@
 package eu.espeo.ipg
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import eu.espeo.ipgcashierlib.IpgPaymentCallback
 import eu.espeo.ipgcashierlib.IpgPaymentProcessor
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : IpgPaymentCallback() {
+class MainActivity : AppCompatActivity(), IpgPaymentCallback {
 
-    private val paymentProcessor by lazy { IpgPaymentProcessor(666) }
+    private val paymentProcessor by lazy { IpgPaymentProcessor(MERCHANT_ID) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener {
-            paymentProcessor.startPaymentProcess(this)
+            paymentProcessor.startPaymentProcess(supportFragmentManager)
         }
     }
 
@@ -31,4 +31,7 @@ class MainActivity : IpgPaymentCallback() {
         PaymentFailedDialog().show(supportFragmentManager, "")
     }
 
+    companion object {
+        private const val MERCHANT_ID = 666L
+    }
 }
