@@ -10,18 +10,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), IpgPaymentCallback {
 
+    private val repository by lazy { MainRepository() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener { fetchToken() }
     }
 
-    fun fetchToken() {
-        
+    private fun fetchToken() {
+        repository.fetchToken(CUSTOMER_ID, MERCHANT_ID, this::startPaymentProcess, this::onError)
     }
 
     private fun startPaymentProcess(token: String) {
         IpgPaymentProcessor().startPaymentProcess(supportFragmentManager, MERCHANT_ID, token)
+    }
+
+    private fun onError() {
+        Toast.makeText(this, R.string.failed_starting_payment_process, Toast.LENGTH_SHORT).show()
     }
 
     override fun paymentSuccessful() {
@@ -36,7 +42,13 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback {
         PaymentFailedDialog().show(supportFragmentManager, null)
     }
 
+    override fun onPause() {
+        super.onPause()
+        repository.cancelJob()
+    }
+
     companion object {
         private const val MERCHANT_ID = 666L
+        private const val CUSTOMER_ID = "sample-002"
     }
 }

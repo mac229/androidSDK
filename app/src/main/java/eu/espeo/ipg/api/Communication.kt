@@ -1,5 +1,6 @@
 package eu.espeo.ipg.api
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,17 +14,18 @@ object Communication {
 
     private const val BASE_URL = "https://cashierui-responsivedev.test.myriadpayments.com/ajax/"
 
-    val service: ApiService
+    val apiService: ApiService
 
     init {
         val retrofit = Retrofit
             .Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(getHttpClient())
             .baseUrl(BASE_URL)
             .build()
 
-        service = retrofit.create(ApiService::class.java)
+        apiService = retrofit.create(ApiService::class.java)
     }
 
     private fun getHttpClient() = OkHttpClient.Builder().addInterceptor(getLoggingInterceptor()).build()
