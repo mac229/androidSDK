@@ -2,10 +2,11 @@ package eu.espeo.ipg.app
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import eu.espeo.ipg.R
 import eu.espeo.ipgcashierlib.IpgPaymentCallback
-import eu.espeo.ipgcashierlib.IpgPaymentProcessor
+import eu.espeo.ipgcashierlib.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,23 +32,35 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
     }
 
     private fun startPaymentProcess(token: String) {
-        IpgPaymentProcessor().startPaymentProcess(supportFragmentManager, MERCHANT_ID, token)
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .add(PaymentDialogFragment.newInstance(MERCHANT_ID, token, 10_000), PaymentDialogFragment.TAG)
+            .commit()
     }
 
     private fun onError() {
-        Toast.makeText(this, R.string.failed_starting_payment_process, Toast.LENGTH_SHORT).show()
+        showToast(R.string.failed_starting_payment_process)
     }
 
-    override fun paymentSuccessful() {
-        PaymentSuccessfulDialog().show(supportFragmentManager, null)
+    override fun onPaymentSuccessful() {
+        PaymentSuccessfulDialogFragment.newInstance().show(supportFragmentManager, null)
     }
 
-    override fun paymentCancelled() {
-        Toast.makeText(this, R.string.payment_cancelled, Toast.LENGTH_SHORT).show()
+    override fun onPaymentCancelled() {
+        showToast(R.string.payment_cancelled)
     }
 
-    override fun paymentFailed() {
-        PaymentFailedDialog().show(supportFragmentManager, null)
+    override fun onPaymentFailed() {
+        PaymentFailedDialogFragment.newInstance().show(supportFragmentManager, null)
+    }
+
+    override fun onSessionExpired() {
+        showToast(R.string.session_expired)
+    }
+
+    private fun showToast(@StringRes text: Int) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
     override fun onPause() {
