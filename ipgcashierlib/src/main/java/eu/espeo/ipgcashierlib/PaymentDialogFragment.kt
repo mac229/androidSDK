@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,6 @@ class PaymentDialogFragment : DialogFragment() {
         }
     }
 
-    private var sessionStartedTime = 0L
     private val timeoutInMs by lazy { arguments!!.getLong(EXTRA_TIMEOUT_IN_MS) }
     private val handler by lazy { Handler() }
 
@@ -38,15 +36,6 @@ class PaymentDialogFragment : DialogFragment() {
 
     override fun getTheme(): Int {
         return R.style.PaymentDialogStyle
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sessionStartedTime = savedInstanceState.getSessionStartedTime()
-    }
-
-    private fun Bundle?.getSessionStartedTime(): Long {
-        return this?.getLong(SAVED_STATE_SESSION_STARTED_TIME) ?: SystemClock.elapsedRealtime()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,10 +54,9 @@ class PaymentDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed(this::onSessionExpired, getSessionExpiredTime())
+        handler.postDelayed(this::onSessionExpired, timeoutInMs)
     }
 
-    private fun getSessionExpiredTime() = sessionStartedTime + timeoutInMs - SystemClock.elapsedRealtime()
 
     private fun createUrl(merchantId: Long, token: String?): String {
         return Uri.parse(URL)
@@ -83,11 +71,6 @@ class PaymentDialogFragment : DialogFragment() {
     private fun onSessionExpired() {
         paymentCallback.onSessionExpired()
         dismiss()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putLong(SAVED_STATE_SESSION_STARTED_TIME, sessionStartedTime)
     }
 
     override fun onPause() {
@@ -125,8 +108,6 @@ class PaymentDialogFragment : DialogFragment() {
 
         private const val MERCHANT_ID = "merchantId"
         private const val TOKEN = "token"
-
-        private const val SAVED_STATE_SESSION_STARTED_TIME = "session_started_time"
 
         private const val EXTRA_MERCHANT_ID = "extra_merchant_id"
         private const val EXTRA_TOKEN = "extra_token"
