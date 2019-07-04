@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .add(PaymentDialogFragment.newInstance(MERCHANT_ID, token, 10_000), PaymentDialogFragment.TAG)
+            .add(PaymentDialogFragment.newInstance(MERCHANT_ID, token), PaymentDialogFragment.TAG)
             .commit()
     }
 

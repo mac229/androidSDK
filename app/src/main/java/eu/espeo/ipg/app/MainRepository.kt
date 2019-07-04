@@ -15,7 +15,7 @@ class MainRepository(override val coroutineContext: CoroutineContext) : Coroutin
     fun fetchToken(customerId: String, merchantId: Long, onSuccess: (String) -> Unit, onError: () -> Unit) {
         launch {
             try {
-                val result = apiService.getToken(customerId, merchantId).await()
+                val result = apiService.getToken(customerId, merchantId)
                 onSuccess(result)
             } catch (exception: Exception) {
                 onError()
