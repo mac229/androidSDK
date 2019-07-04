@@ -1,6 +1,5 @@
 package eu.espeo.ipg.api
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,7 +19,6 @@ object Communication {
         val retrofit = Retrofit
             .Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(getHttpClient())
             .baseUrl(BASE_URL)
             .build()

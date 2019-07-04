@@ -1,6 +1,5 @@
 package eu.espeo.ipg.api
 
-import kotlinx.coroutines.Deferred
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -10,5 +9,5 @@ import retrofit2.http.Query
 interface ApiService {
 
     @POST("token")
-    fun getToken(@Query("customerId") customerId: String, @Query("merchantId") merchantId: Long): Deferred<String>
+    suspend fun getToken(@Query("customerId") customerId: String, @Query("merchantId") merchantId: Long): String
 }

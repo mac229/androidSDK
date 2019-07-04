@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import eu.espeo.ipg.R
 
-class PaymentFailedDialog: DialogFragment() {
+class PaymentFailedDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,8 +21,10 @@ class PaymentFailedDialog: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Handler().postDelayed({
-            dismiss()
-        }, 2000)
+        Handler().postDelayed({ dismiss() }, 3000)
+    }
+
+    companion object {
+        fun newInstance() = PaymentFailedDialogFragment()
     }
 }

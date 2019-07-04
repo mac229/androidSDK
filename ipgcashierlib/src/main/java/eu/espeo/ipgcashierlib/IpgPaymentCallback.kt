@@ -1,15 +1,12 @@
 package eu.espeo.ipgcashierlib
 
-import android.webkit.JavascriptInterface
-
 interface IpgPaymentCallback {
 
-    @JavascriptInterface
-    fun paymentSuccessful()
+    fun onPaymentSuccessful()
 
-    @JavascriptInterface
-    fun paymentCancelled()
+    fun onPaymentCancelled()
 
-    @JavascriptInterface
-    fun paymentFailed()
+    fun onPaymentFailed()
+
+    fun onSessionExpired() = Unit
 }
