@@ -61,7 +61,7 @@ class PaymentDialogFragment : DialogFragment() {
     private fun createUrl(merchantId: Long, token: String?): String {
         return Uri.parse(URL)
             .buildUpon()
-            .appendQueryParameter("stylesSheetUrl", "orlen.css") // TODO remove it when style will depend on merchant id
+            .appendQueryParameter(KEY_STYLE_SHEET_URL, ORLEN_CSS_STYLE) // TODO remove it when style will depend on merchant id
             .appendQueryParameter(MERCHANT_ID, merchantId.toString())
             .appendQueryParameter(TOKEN, token)
             .build()
@@ -103,8 +103,10 @@ class PaymentDialogFragment : DialogFragment() {
 
         val TAG: String = PaymentDialogFragment::class.java.simpleName
 
-        private const val URL =
-            "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
+        private const val URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
+
+        private const val KEY_STYLE_SHEET_URL = "stylesSheetUrl"
+        private const val ORLEN_CSS_STYLE = "orlen.css"
 
         private const val MERCHANT_ID = "merchantId"
         private const val TOKEN = "token"
