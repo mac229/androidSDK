@@ -27,11 +27,11 @@ class PaymentDialogFragment : DialogFragment() {
 
     private val timeoutInMs by lazy { arguments!!.getLong(EXTRA_TIMEOUT_IN_MS) }
     private val handler by lazy { Handler() }
+    private val sessionExpiredRunnable by lazy { Runnable(this::onSessionExpired) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        paymentCallback = (context as? IpgPaymentCallback)
-            ?: throw NotImplementedError("Calling activity must implement IpgPaymentCallback")
+        paymentCallback = getListenerOrThrowException()
     }
 
     override fun getTheme(): Int {
@@ -54,14 +54,13 @@ class PaymentDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed(this::onSessionExpired, timeoutInMs)
+        handler.postDelayed(sessionExpiredRunnable, timeoutInMs)
     }
-
 
     private fun createUrl(merchantId: Long, token: String?): String {
         return Uri.parse(URL)
             .buildUpon()
-            .appendQueryParameter(KEY_STYLE_SHEET_URL, ORLEN_CSS_STYLE) // TODO remove it when style will depend on merchant id
+            .appendQueryParameter(KEY_STYLE_SHEET_URL, ORLEN_CSS_STYLE) // TODO only for demo purposes
             .appendQueryParameter(MERCHANT_ID, merchantId.toString())
             .appendQueryParameter(TOKEN, token)
             .build()
@@ -75,7 +74,7 @@ class PaymentDialogFragment : DialogFragment() {
 
     override fun onPause() {
         super.onPause()
-        handler.removeCallbacks(this::onSessionExpired)
+        handler.removeCallbacks(sessionExpiredRunnable)
     }
 
     private inner class JSInterface {
