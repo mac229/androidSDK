@@ -1,12 +1,12 @@
-package com.evopayments.ipg.app
+package com.evopayments.demo.app
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import com.evopayments.ipg.R
-import com.evopayments.ipgcashierlib.IpgPaymentCallback
-import com.evopayments.ipgcashierlib.PaymentDialogFragment
+import com.evopayments.demo.R
+import com.evopayments.sdk.IpgPaymentCallback
+import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

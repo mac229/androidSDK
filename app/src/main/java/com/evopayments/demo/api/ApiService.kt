@@ -1,4 +1,4 @@
-package com.evopayments.ipg.api
+package com.evopayments.demo.api
 
 import retrofit2.http.POST
 import retrofit2.http.Query

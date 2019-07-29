@@ -1,4 +1,4 @@
-package com.evopayments.ipgcashierlib
+package com.evopayments.sdk
 
 interface IpgPaymentCallback {
 

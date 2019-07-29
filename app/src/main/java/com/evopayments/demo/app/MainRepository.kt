@@ -1,6 +1,6 @@
-package com.evopayments.ipg.app
+package com.evopayments.demo.app
 
-import com.evopayments.ipg.api.Communication
+import com.evopayments.demo.api.Communication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext

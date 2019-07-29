@@ -1,4 +1,4 @@
-package com.evopayments.ipgcashierlib
+package com.evopayments.sdk
 
 import androidx.fragment.app.Fragment
 

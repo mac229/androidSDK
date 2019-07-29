@@ -1,4 +1,4 @@
-package com.evopayments.ipgcashierlib
+package com.evopayments.sdk
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
+import com.evopayments.evocashierlib.R
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
