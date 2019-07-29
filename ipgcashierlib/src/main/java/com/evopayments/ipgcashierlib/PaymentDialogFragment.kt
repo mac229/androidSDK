@@ -1,4 +1,4 @@
-package eu.espeo.ipgcashierlib
+package com.evopayments.ipgcashierlib
 
 import android.annotation.SuppressLint
 import android.content.Context
