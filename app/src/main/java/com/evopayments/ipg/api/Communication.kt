@@ -1,4 +1,4 @@
-package eu.espeo.ipg.api
+package com.evopayments.ipg.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -1,10 +1,10 @@
-package eu.espeo.ipg.app
+package com.evopayments.ipg.app
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import eu.espeo.ipg.R
+import com.evopayments.ipg.R
 import com.evopayments.ipgcashierlib.IpgPaymentCallback
 import com.evopayments.ipgcashierlib.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*

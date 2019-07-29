@@ -1,6 +1,6 @@
-package eu.espeo.ipg.app
+package com.evopayments.ipg.app
 
-import eu.espeo.ipg.api.Communication
+import com.evopayments.ipg.api.Communication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
