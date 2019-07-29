@@ -5,8 +5,8 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import eu.espeo.ipg.R
-import eu.espeo.ipgcashierlib.IpgPaymentCallback
-import eu.espeo.ipgcashierlib.PaymentDialogFragment
+import com.evopayments.ipgcashierlib.IpgPaymentCallback
+import com.evopayments.ipgcashierlib.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
