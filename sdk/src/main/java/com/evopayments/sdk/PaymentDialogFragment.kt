@@ -47,9 +47,10 @@ class PaymentDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val merchantId = arguments!!.getLong(EXTRA_MERCHANT_ID)
+        val baseUrl = arguments!!.getString(EXTRA_URL)!!
         val token = arguments!!.getString(EXTRA_TOKEN)
 
-        val url = createUrl(merchantId, token)
+        val url = createUrl(baseUrl, merchantId, token)
         webView.loadUrl(url)
     }
 
@@ -58,10 +59,9 @@ class PaymentDialogFragment : DialogFragment() {
         handler.postDelayed(sessionExpiredRunnable, timeoutInMs)
     }
 
-    private fun createUrl(merchantId: Long, token: String?): String {
-        return Uri.parse(URL)
+    private fun createUrl(baseUrl: String, merchantId: Long, token: String?): String {
+        return Uri.parse(baseUrl)
             .buildUpon()
-            .appendQueryParameter(KEY_STYLE_SHEET_URL, ORLEN_CSS_STYLE) // TODO only for demo purposes
             .appendQueryParameter(MERCHANT_ID, merchantId.toString())
             .appendQueryParameter(TOKEN, token)
             .build()
@@ -103,24 +103,21 @@ class PaymentDialogFragment : DialogFragment() {
 
         val TAG: String = PaymentDialogFragment::class.java.simpleName
 
-        private const val URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
-
-        private const val KEY_STYLE_SHEET_URL = "stylesSheetUrl"
-        private const val ORLEN_CSS_STYLE = "orlen.css"
-
         private const val MERCHANT_ID = "merchantId"
         private const val TOKEN = "token"
 
         private const val EXTRA_MERCHANT_ID = "extra_merchant_id"
+        private const val EXTRA_URL = "extra_cashier_url"
         private const val EXTRA_TOKEN = "extra_token"
         private const val EXTRA_TIMEOUT_IN_MS = "extra_timeout_in_ms"
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
-        fun newInstance(merchantId: Long, token: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
+        fun newInstance(merchantId: Long, cashierUrl: String, token: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
             PaymentDialogFragment().apply {
                 arguments = Bundle().apply {
                     putLong(EXTRA_MERCHANT_ID, merchantId)
+                    putString(EXTRA_URL, cashierUrl)
                     putString(EXTRA_TOKEN, token)
                     putLong(EXTRA_TIMEOUT_IN_MS, timeoutInMs)
                 }
