@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
 class PaymentDialogFragment : DialogFragment() {
 
-    private lateinit var paymentCallback: IpgPaymentCallback
+    private lateinit var paymentCallback: EvoPaymentsCallback
 
     private val webView by lazy {
         WebView(context).apply {

@@ -1,6 +1,6 @@
 package com.evopayments.sdk
 
-interface IpgPaymentCallback {
+interface EvoPaymentsCallback {
 
     fun onPaymentSuccessful()
 

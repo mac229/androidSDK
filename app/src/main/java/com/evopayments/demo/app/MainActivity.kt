@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
 import com.evopayments.demo.api.model.PaymentDataResponse
-import com.evopayments.sdk.IpgPaymentCallback
+import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), IpgPaymentCallback {
+class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
 
