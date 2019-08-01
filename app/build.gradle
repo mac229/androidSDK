@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "eu.espeo.ipg"
+        applicationId "com.evopayments.demo"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -27,6 +27,7 @@ ext {
 dependencies {
     // Modules
     implementation project(":sdk")
+    // implementation 'com.github.intelligentpayments:androidSDK:0.1.0'
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Android X
