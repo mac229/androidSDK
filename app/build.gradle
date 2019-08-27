@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "eu.espeo.ipg"
+        applicationId "com.evopayments.demo"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -27,17 +27,20 @@ ext {
 dependencies {
     // Modules
     implementation project(":sdk")
+    //implementation 'com.github.intelligentpayments:androidSDK:0.3.0'
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Android X
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core-ktx:1.0.2'
+    // Jetpack
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha02"
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2'
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
     // OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
 

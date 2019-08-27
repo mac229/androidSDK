@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ipg</string>
+    <string name="app_name">EvoPayments Demo</string>
     <string name="start_payment_process">Start payment process</string>
     <string name="payment_successful">Payment successful</string>
     <string name="payment_failed">Payment failed</string>

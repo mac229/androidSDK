@@ -3,7 +3,7 @@ package com.evopayments.demo.api
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * Created by Maciej Kozłowski on 2019-05-10.
@@ -18,7 +18,7 @@ object Communication {
     init {
         val retrofit = Retrofit
             .Builder()
-            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .client(getHttpClient())
             .baseUrl(BASE_URL)
             .build()

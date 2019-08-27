@@ -4,22 +4,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
-import com.evopayments.sdk.IpgPaymentCallback
+import com.evopayments.demo.api.model.PaymentDataResponse
+import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
+class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
-    private val job by lazy { Job() }
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    private val repository by lazy { MainRepository(coroutineContext) }
+    private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +22,15 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
     }
 
     private fun fetchToken() {
-        repository.fetchToken(CUSTOMER_ID, MERCHANT_ID, this::startPaymentProcess, this::onError)
+        viewModel.fetchToken(CUSTOMER_ID, MERCHANT_ID, this::startPaymentProcess, this::onError)
     }
 
-    private fun startPaymentProcess(token: String) {
+    private fun startPaymentProcess(data: PaymentDataResponse) {
+        val dialogFragment = PaymentDialogFragment.newInstance(MERCHANT_ID, data.cashierUrl, data.token)
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .add(PaymentDialogFragment.newInstance(MERCHANT_ID, token), PaymentDialogFragment.TAG)
+            .add(dialogFragment, PaymentDialogFragment.TAG)
             .commit()
     }
 
@@ -61,11 +56,6 @@ class MainActivity : AppCompatActivity(), IpgPaymentCallback, CoroutineScope {
 
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        job.cancel()
     }
 
     companion object {
