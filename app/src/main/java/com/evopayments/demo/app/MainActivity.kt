@@ -14,19 +14,38 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
+    private var merchantId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener { fetchToken() }
+        //defaults
+        merchantIdEditText.setTextKeepState("167885")
+        passwordEditText.setTextKeepState("56789")
+        customerIdEditText.setTextKeepState("lovelyrita")
+        currencyEditText.setTextKeepState("PLN")
+        countryEditText.setTextKeepState("PL")
+        amountEditText.setTextKeepState("2")
     }
 
     private fun fetchToken() {
-        viewModel.fetchToken(CUSTOMER_ID, MERCHANT_ID, this::startPaymentProcess, this::onError)
+        this.merchantId = merchantIdEditText.getText().toString()
+        val tokenParams = hashMapOf(
+            Pair("merchantId", merchantId),
+            Pair("password", passwordEditText.getText().toString()),
+            Pair("customerId", customerIdEditText.getText().toString()),
+            Pair("currency", currencyEditText.getText().toString()),
+            Pair("country", countryEditText.getText().toString()),
+            Pair("amount", amountEditText.getText().toString())
+            )
+
+        viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
+
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
-        val dialogFragment = PaymentDialogFragment.newInstance(MERCHANT_ID, data.cashierUrl, data.token)
+        val dialogFragment = PaymentDialogFragment.newInstance(merchantId, data.cashierUrl, data.token)
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)

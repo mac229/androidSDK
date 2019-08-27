@@ -46,7 +46,7 @@ class PaymentDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val merchantId = arguments!!.getLong(EXTRA_MERCHANT_ID)
+        val merchantId = arguments!!.getString(EXTRA_MERCHANT_ID)
         val baseUrl = arguments!!.getString(EXTRA_URL)!!
         val token = arguments!!.getString(EXTRA_TOKEN)
 
@@ -59,7 +59,7 @@ class PaymentDialogFragment : DialogFragment() {
         handler.postDelayed(sessionExpiredRunnable, timeoutInMs)
     }
 
-    private fun createUrl(baseUrl: String, merchantId: Long, token: String?): String {
+    private fun createUrl(baseUrl: String, merchantId: String?, token: String?): String {
         return Uri.parse(baseUrl)
             .buildUpon()
             .appendQueryParameter(MERCHANT_ID, merchantId.toString())
@@ -113,10 +113,10 @@ class PaymentDialogFragment : DialogFragment() {
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
-        fun newInstance(merchantId: Long, cashierUrl: String, token: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
+        fun newInstance(merchantId: String, cashierUrl: String, token: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
             PaymentDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(EXTRA_MERCHANT_ID, merchantId)
+                    putString(EXTRA_MERCHANT_ID, merchantId)
                     putString(EXTRA_URL, cashierUrl)
                     putString(EXTRA_TOKEN, token)
                     putLong(EXTRA_TIMEOUT_IN_MS, timeoutInMs)

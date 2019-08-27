@@ -1,6 +1,7 @@
 package com.evopayments.demo.app
 
 import android.util.Log
+import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.evopayments.demo.api.Communication
@@ -15,10 +16,10 @@ class MainViewModel : ViewModel() {
 
     private val apiService = Communication.apiService
 
-    fun fetchToken(customerId: String, merchantId: Long, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+    fun fetchToken(tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
         viewModelScope.launch {
             try {
-                val result = apiService.getToken(customerId, merchantId)
+                val result = apiService.getToken(tokenParams)
                 onSuccess(result)
             } catch (exception: Exception) {
                 Log.e(TAG, "Error", exception)
