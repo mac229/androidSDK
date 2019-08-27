@@ -37,7 +37,9 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             Pair("customerId", customerIdEditText.getText().toString()),
             Pair("currency", currencyEditText.getText().toString()),
             Pair("country", countryEditText.getText().toString()),
-            Pair("amount", amountEditText.getText().toString())
+            Pair("amount", amountEditText.getText().toString()),
+            Pair("action", "AUTH"),
+            Pair("allowOriginUrl", "http://example.com")
             )
 
         viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
