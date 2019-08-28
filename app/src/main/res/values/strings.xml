@@ -13,4 +13,7 @@
     <string name="amount">amount</string>
     <string name="currency_code">currency code</string>
     <string name="country_code">country code</string>
+    <string name="show_test">Show test screen</string>
+    <string name="redirection_requested">redirection requested</string>
+    <string name="close_requested">Closing redir window requested</string>
 </resources>

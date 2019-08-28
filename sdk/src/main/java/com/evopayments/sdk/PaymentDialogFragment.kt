@@ -97,6 +97,18 @@ class PaymentDialogFragment : DialogFragment() {
             paymentCallback.onPaymentFailed()
             dismiss()
         }
+
+        @JavascriptInterface
+        fun redirected() {
+            paymentCallback.onRedirected()
+            dismiss()
+        }
+
+        @JavascriptInterface
+        fun close() {
+            paymentCallback.onClose()
+            dismiss()
+        }
     }
 
     companion object {

@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener { fetchToken() }
+        showTestButton.setOnClickListener { showTest() }
         //defaults
         merchantIdEditText.setTextKeepState("167885")
         passwordEditText.setTextKeepState("56789")
@@ -38,12 +39,20 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             Pair("currency", currencyEditText.getText().toString()),
             Pair("country", countryEditText.getText().toString()),
             Pair("amount", amountEditText.getText().toString()),
-            Pair("action", "AUTH"),
+            Pair("action", actionSpinner.selectedItem.toString()),
             Pair("allowOriginUrl", "http://example.com")
             )
 
         viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
+    }
 
+    private fun showTest() {
+        val dialogFragment = PaymentDialogFragment.newInstance("", TEST_CASHIER_URL, "")
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .add(dialogFragment, PaymentDialogFragment.TAG)
+            .commit()
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
@@ -75,12 +84,20 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         showToast(R.string.session_expired)
     }
 
+    override fun onRedirected() {
+        showToast(R.string.redirection_requested)
+    }
+
+    override fun onClose() {
+        showToast(R.string.close_requested)
+    }
+
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
+
     companion object {
-        private const val MERCHANT_ID = 666L
-        private const val CUSTOMER_ID = "sample-002"
+        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
     }
 }
