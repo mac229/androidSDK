@@ -8,5 +8,11 @@ interface EvoPaymentsCallback {
 
     fun onPaymentFailed()
 
+    fun onRedirected()
+
+    fun onClose()
+
     fun onSessionExpired() = Unit
+
+
 }
