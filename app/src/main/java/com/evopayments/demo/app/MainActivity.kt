@@ -1,6 +1,7 @@
 package com.evopayments.demo.app
 
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -31,19 +32,23 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun fetchToken() {
-        this.merchantId = merchantIdEditText.getText().toString()
+        this.merchantId = merchantIdEditText.getValue()
         val tokenParams = hashMapOf(
-            Pair("merchantId", merchantId),
-            Pair("password", passwordEditText.getText().toString()),
-            Pair("customerId", customerIdEditText.getText().toString()),
-            Pair("currency", currencyEditText.getText().toString()),
-            Pair("country", countryEditText.getText().toString()),
-            Pair("amount", amountEditText.getText().toString()),
-            Pair("action", actionSpinner.selectedItem.toString()),
-            Pair("allowOriginUrl", "http://example.com")
-            )
+            "merchantId" to merchantId,
+            "password" to passwordEditText.getValue(),
+            "customerId" to customerIdEditText.getValue(),
+            "currency" to currencyEditText.getValue(),
+            "country" to countryEditText.getValue(),
+            "amount" to amountEditText.getValue(),
+            "action" to actionSpinner.selectedItem.toString(),
+            "allowOriginUrl" to "http://example.com"
+        )
 
         viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
+    }
+
+    private fun EditText.getValue(): String {
+        return text.toString()
     }
 
     private fun showTest() {
