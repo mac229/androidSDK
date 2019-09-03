@@ -81,6 +81,12 @@ class PaymentDialogFragment : DialogFragment() {
     private inner class JSInterface {
 
         @JavascriptInterface
+        fun paymentStarted() {
+            paymentCallback.onPaymentStarted()
+            dismiss()
+        }
+
+        @JavascriptInterface
         fun paymentSuccessful() {
             paymentCallback.onPaymentSuccessful()
             dismiss()
@@ -99,8 +105,14 @@ class PaymentDialogFragment : DialogFragment() {
         }
 
         @JavascriptInterface
-        fun redirected() {
-            paymentCallback.onRedirected()
+        fun paymentUndetermined() {
+            paymentCallback.onPaymentUndetermined()
+            dismiss()
+        }
+
+        @JavascriptInterface
+        fun redirected(url: String) {
+            paymentCallback.onRedirected(url)
             dismiss()
         }
 

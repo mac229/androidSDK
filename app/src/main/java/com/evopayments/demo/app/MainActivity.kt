@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
+import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
@@ -20,14 +21,19 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener { fetchToken() }
-        showTestButton.setOnClickListener { showTest() }
-        //defaults
+        showTestButton.setOnClickListener { showRawWebDemo() }
+        setDefaults()
+    }
+
+    private fun setDefaults() {
         merchantIdEditText.setTextKeepState("167885")
         passwordEditText.setTextKeepState("56789")
         customerIdEditText.setTextKeepState("lovelyrita")
         currencyEditText.setTextKeepState("PLN")
         countryEditText.setTextKeepState("PL")
         amountEditText.setTextKeepState("2")
+        tokenUrlEditText.setTextKeepState(Communication.getTokenUrl())
+        languageEditText.setTextKeepState("pl")
     }
 
     private fun fetchToken() {
@@ -40,14 +46,20 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             Pair("country", countryEditText.getText().toString()),
             Pair("amount", amountEditText.getText().toString()),
             Pair("action", actionSpinner.selectedItem.toString()),
-            Pair("allowOriginUrl", "http://example.com")
+            Pair("allowOriginUrl", "http://example.com"),
+            Pair("language", languageEditText.getText().toString())
             )
 
+        Communication.setTokenUrl(tokenUrlEditText.getText().toString())
         viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
     }
 
-    private fun showTest() {
-        val dialogFragment = PaymentDialogFragment.newInstance("", TEST_CASHIER_URL, "")
+    private fun showRawWebDemo() {
+        var cashierUrl = cashierUrlEditText.getText().toString();
+        if(cashierUrl == "") {
+            cashierUrl = TEST_CASHIER_URL
+        }
+        val dialogFragment = PaymentDialogFragment.newInstance("", cashierUrl, "")
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -68,6 +80,10 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         showToast(R.string.failed_starting_payment_process)
     }
 
+    override fun onPaymentStarted() {
+        showToast(R.string.payment_started)
+    }
+
     override fun onPaymentSuccessful() {
         PaymentSuccessfulDialogFragment.newInstance().show(supportFragmentManager, null)
     }
@@ -80,11 +96,15 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         PaymentFailedDialogFragment.newInstance().show(supportFragmentManager, null)
     }
 
+    override fun onPaymentUndetermined() {
+        showToast(R.string.payment_result_undetermined)
+    }
+
     override fun onSessionExpired() {
         showToast(R.string.session_expired)
     }
 
-    override fun onRedirected() {
+    override fun onRedirected(url: String) {
         showToast(R.string.redirection_requested)
     }
 
