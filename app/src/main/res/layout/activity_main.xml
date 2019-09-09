@@ -1,96 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
-            android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:layout_margin="40dp">
-        <ImageView
-                android:adjustViewBounds="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="40dp"
-        />
-        <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/actionSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/actions"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/merchantIdEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/merchant_id"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/passwordEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/merchant_password"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/customerIdEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/customer_id"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/amountEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/amount"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/currencyEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/currency_code"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/countryEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/country_code"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/languageEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/language_code"/>
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scroll"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	>
 
-        <Button
-                android:id="@+id/startPaymentButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:text="@string/start_demo"
-                android:layout_gravity="center"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/white"
-        />
-        <Button
-                android:id="@+id/showTestButton"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:text="@string/show_test"
-                android:layout_gravity="center"
-        />
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="40dp"
+		android:orientation="vertical"
+		>
 
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/tokenUrlEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/token_url"/>
-        <androidx.appcompat.widget.AppCompatTextView
-                android:text="leave empty to use server config:"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/cashierUrlEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/cashier_url"
-        android:layout_marginBottom="@android:dimen/app_icon_size"/>
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_margin="40dp"
+			android:adjustViewBounds="true"
+			android:src="@mipmap/ic_launcher"
+			/>
 
+		<androidx.appcompat.widget.AppCompatSpinner
+			android:id="@+id/actionSpinner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:entries="@array/actions"
+			/>
 
-    </LinearLayout>
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/merchantIdEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/merchant_id"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/passwordEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/merchant_password"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/customerIdEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/customer_id"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/amountEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/amount"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/currencyEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/currency_code"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/countryEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/country_code"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/languageEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/language_code"
+			/>
+
+		<Button
+			android:id="@+id/startPaymentButton"
+			android:layout_width="match_parent"
+			android:layout_height="80dp"
+			android:layout_gravity="center"
+			android:textColor="@color/white"
+			android:background="@color/colorPrimary"
+			android:text="@string/start_demo"
+			/>
+
+		<Button
+			android:id="@+id/showTestButton"
+			android:layout_width="match_parent"
+			android:layout_height="80dp"
+			android:layout_gravity="center"
+			android:text="@string/show_test"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/tokenUrlEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/token_url"
+			/>
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="leave empty to use server config:"
+			/>
+
+		<androidx.appcompat.widget.AppCompatEditText
+			android:id="@+id/cashierUrlEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="@android:dimen/app_icon_size"
+			android:hint="@string/cashier_url"
+			/>
+
+	</LinearLayout>
 </ScrollView>

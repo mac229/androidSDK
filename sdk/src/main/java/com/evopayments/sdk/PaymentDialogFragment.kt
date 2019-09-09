@@ -8,8 +8,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
+import android.webkit.*
 import androidx.fragment.app.DialogFragment
 import com.evopayments.evocashierlib.R
 import java.util.concurrent.TimeUnit
@@ -23,6 +22,7 @@ class PaymentDialogFragment : DialogFragment() {
         WebView(context).apply {
             settings.javaScriptEnabled = true
             addJavascriptInterface(JSInterface(), "JSInterface")
+            webViewClient = PaymentWebViewClient()
         }
     }
 
@@ -119,6 +119,14 @@ class PaymentDialogFragment : DialogFragment() {
         @JavascriptInterface
         fun close() {
             paymentCallback.onClose()
+            dismiss()
+        }
+    }
+
+    private inner class PaymentWebViewClient : WebViewClient() {
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            super.onReceivedError(view, request, error)
+            paymentCallback.onPaymentFailed()
             dismiss()
         }
     }
