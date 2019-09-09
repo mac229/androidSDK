@@ -14,9 +14,12 @@ import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
-    private val apiService = Communication.apiService
+
 
     fun fetchToken(tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+
+        val apiService = Communication.apiService
+
         viewModelScope.launch {
             try {
                 val result = apiService.getToken(tokenParams)

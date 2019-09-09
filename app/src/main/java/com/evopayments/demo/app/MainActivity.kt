@@ -6,17 +6,20 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
 import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
-    private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
+    private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
+    private var myriadFlowId: String = "sdk-" + Integer.toHexString( (Math.random() * Integer.MAX_VALUE).roundToInt() ).substring(0,5)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,8 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             "amount" to amountEditText.getValue(),
             "action" to actionSpinner.selectedItem.toString(),
             "allowOriginUrl" to "http://example.com",
-            "language" to languageEditText.getValue()
+            "language" to languageEditText.getValue(),
+            "myriadFlowId" to myriadFlowId
         )
 
         Communication.setTokenUrl(tokenUrlEditText.getValue())
@@ -60,11 +64,11 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun showRawWebDemo() {
-        var cashierUrl = cashierUrlEditText.getText().toString();
+        var cashierUrl = cashierUrlEditText.getValue();
         if(cashierUrl == "") {
             cashierUrl = TEST_CASHIER_URL
         }
-        val dialogFragment = PaymentDialogFragment.newInstance("", cashierUrl, "")
+        val dialogFragment = PaymentDialogFragment.newInstance("", cashierUrl, "", myriadFlowId)
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
-        val dialogFragment = PaymentDialogFragment.newInstance(merchantId, data.cashierUrl, data.token)
+        val dialogFragment = PaymentDialogFragment.newInstance(merchantId, data.cashierUrl, data.token, myriadFlowId)
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)

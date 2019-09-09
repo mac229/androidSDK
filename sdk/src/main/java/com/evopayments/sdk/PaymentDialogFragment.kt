@@ -49,8 +49,9 @@ class PaymentDialogFragment : DialogFragment() {
         val merchantId = arguments!!.getString(EXTRA_MERCHANT_ID)
         val baseUrl = arguments!!.getString(EXTRA_URL)!!
         val token = arguments!!.getString(EXTRA_TOKEN)
+        val myriadFlowId =arguments!!.getString(MYRIAD_FLOW_ID)
 
-        val url = createUrl(baseUrl, merchantId, token)
+        val url = createUrl(baseUrl, merchantId, token, myriadFlowId)
         webView.loadUrl(url)
     }
 
@@ -59,11 +60,12 @@ class PaymentDialogFragment : DialogFragment() {
         handler.postDelayed(sessionExpiredRunnable, timeoutInMs)
     }
 
-    private fun createUrl(baseUrl: String, merchantId: String?, token: String?): String {
+    private fun createUrl(baseUrl: String, merchantId: String?, token: String?, myriadFlowId: String): String {
         return Uri.parse(baseUrl)
             .buildUpon()
             .appendQueryParameter(MERCHANT_ID, merchantId.toString())
             .appendQueryParameter(TOKEN, token)
+            .appendQueryParameter(MYRIAD_FLOW_ID, myriadFlowId)
             .build()
             .toString()
     }
@@ -137,6 +139,7 @@ class PaymentDialogFragment : DialogFragment() {
 
         private const val MERCHANT_ID = "merchantId"
         private const val TOKEN = "token"
+        private const val MYRIAD_FLOW_ID = "myriadFlowId"
 
         private const val EXTRA_MERCHANT_ID = "extra_merchant_id"
         private const val EXTRA_URL = "extra_cashier_url"
@@ -145,12 +148,13 @@ class PaymentDialogFragment : DialogFragment() {
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
-        fun newInstance(merchantId: String, cashierUrl: String, token: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
+        fun newInstance(merchantId: String, cashierUrl: String, token: String, myriadFlowId: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
             PaymentDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_MERCHANT_ID, merchantId)
                     putString(EXTRA_URL, cashierUrl)
                     putString(EXTRA_TOKEN, token)
+                    putString(MYRIAD_FLOW_ID, myriadFlowId)
                     putLong(EXTRA_TIMEOUT_IN_MS, timeoutInMs)
                 }
             }
