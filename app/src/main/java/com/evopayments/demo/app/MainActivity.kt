@@ -5,7 +5,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.evopayments.demo.R
 import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.DemoTokenParameters
@@ -13,17 +13,17 @@ import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
-    private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
+    private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
-    private var myriadFlowId: String = viewModel.generateFlowId()
+    private lateinit var myriadFlowId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        myriadFlowId = viewModel.generateFlowId()
         startPaymentButton.setOnClickListener { fetchToken() }
         showTestButton.setOnClickListener { showRawWebDemo() }
         setDefaults()
@@ -31,15 +31,15 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private fun setDefaults() {
         val defaults = DemoTokenParameters()
-        merchantIdEditText.setText(defaults.get("merchantId"))
-        passwordEditText.setTextKeepState(defaults.get("password"))
-        customerIdEditText.setTextKeepState(defaults.get("customerId"))
-        currencyEditText.setTextKeepState(defaults.get("currency"))
-        countryEditText.setTextKeepState(defaults.get("country"))
-        amountEditText.setTextKeepState(defaults.get("amount"))
-        languageEditText.setTextKeepState(defaults.get("language"))
+        merchantIdEditText.setText(defaults.getMerchantId())
+        passwordEditText.setText(defaults.getPassword())
+        customerIdEditText.setText(defaults.getCustomerId())
+        currencyEditText.setText(defaults.getCurrency())
+        countryEditText.setText(defaults.getCountry())
+        amountEditText.setText(defaults.getAmount())
+        languageEditText.setText(defaults.getLanguage())
 
-        tokenUrlEditText.setTextKeepState(Communication.getTokenUrl())
+        tokenUrlEditText.setText(Communication.getTokenUrl())
     }
 
     private fun fetchToken() {
@@ -130,7 +130,6 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
-
 
 
 }
