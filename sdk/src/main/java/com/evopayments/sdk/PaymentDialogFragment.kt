@@ -8,22 +8,20 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.JavascriptInterface
 import androidx.fragment.app.DialogFragment
 import com.evopayments.evocashierlib.R
+import com.evopayments.sdk.redirect.RedirectCallback
+import com.evopayments.sdk.redirect.WebDialogFragment
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-class PaymentDialogFragment : DialogFragment() {
+class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
 
     private val webView by lazy {
-        WebView(context).apply {
-            settings.javaScriptEnabled = true
-            addJavascriptInterface(JSInterface(), "JSInterface")
-            webViewClient = PaymentWebViewClient()
-        }
+        WebViewFactory.createWebView(context!!, JSInterface(), this::onWebViewError)
     }
 
     private val timeoutInMs by lazy { arguments!!.getLong(EXTRA_TIMEOUT_IN_MS) }
@@ -39,17 +37,21 @@ class PaymentDialogFragment : DialogFragment() {
         return R.style.PaymentDialogStyle
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return webView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val merchantId = arguments!!.getString(EXTRA_MERCHANT_ID)
+        val merchantId = arguments!!.getString(EXTRA_MERCHANT_ID)!!
         val baseUrl = arguments!!.getString(EXTRA_URL)!!
-        val token = arguments!!.getString(EXTRA_TOKEN)
-        val myriadFlowId =arguments!!.getString(MYRIAD_FLOW_ID)
+        val token = arguments!!.getString(EXTRA_TOKEN)!!
+        val myriadFlowId = arguments!!.getString(MYRIAD_FLOW_ID)!!
 
         val url = createUrl(baseUrl, merchantId, token, myriadFlowId)
         webView.loadUrl(url)
@@ -60,10 +62,15 @@ class PaymentDialogFragment : DialogFragment() {
         handler.postDelayed(sessionExpiredRunnable, timeoutInMs)
     }
 
-    private fun createUrl(baseUrl: String, merchantId: String?, token: String?, myriadFlowId: String): String {
+    private fun createUrl(
+        baseUrl: String,
+        merchantId: String,
+        token: String,
+        myriadFlowId: String
+    ): String {
         return Uri.parse(baseUrl)
             .buildUpon()
-            .appendQueryParameter(MERCHANT_ID, merchantId.toString())
+            .appendQueryParameter(MERCHANT_ID, merchantId)
             .appendQueryParameter(TOKEN, token)
             .appendQueryParameter(MYRIAD_FLOW_ID, myriadFlowId)
             .build()
@@ -72,6 +79,11 @@ class PaymentDialogFragment : DialogFragment() {
 
     private fun onSessionExpired() {
         paymentCallback.onSessionExpired()
+        dismiss()
+    }
+
+    override fun onWebViewError() {
+        paymentCallback.onPaymentFailed()
         dismiss()
     }
 
@@ -114,21 +126,16 @@ class PaymentDialogFragment : DialogFragment() {
 
         @JavascriptInterface
         fun redirected(url: String) {
-            paymentCallback.onRedirected(url)
-            dismiss()
+            childFragmentManager
+                .beginTransaction()
+                .addToBackStack(null)
+                .add(WebDialogFragment.newInstance(url), WebDialogFragment.TAG)
+                .commit()
         }
 
         @JavascriptInterface
         fun close() {
             paymentCallback.onClose()
-            dismiss()
-        }
-    }
-
-    private inner class PaymentWebViewClient : WebViewClient() {
-        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-            super.onReceivedError(view, request, error)
-            paymentCallback.onPaymentFailed()
             dismiss()
         }
     }
@@ -148,15 +155,20 @@ class PaymentDialogFragment : DialogFragment() {
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
-        fun newInstance(merchantId: String, cashierUrl: String, token: String, myriadFlowId: String, timeoutInMs: Long = DEFAULT_TIMEOUT) =
-            PaymentDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(EXTRA_MERCHANT_ID, merchantId)
-                    putString(EXTRA_URL, cashierUrl)
-                    putString(EXTRA_TOKEN, token)
-                    putString(MYRIAD_FLOW_ID, myriadFlowId)
-                    putLong(EXTRA_TIMEOUT_IN_MS, timeoutInMs)
-                }
+        fun newInstance(
+            merchantId: String,
+            cashierUrl: String,
+            token: String,
+            myriadFlowId: String,
+            timeoutInMs: Long = DEFAULT_TIMEOUT
+        ) = PaymentDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_MERCHANT_ID, merchantId)
+                putString(EXTRA_URL, cashierUrl)
+                putString(EXTRA_TOKEN, token)
+                putString(MYRIAD_FLOW_ID, myriadFlowId)
+                putLong(EXTRA_TIMEOUT_IN_MS, timeoutInMs)
             }
+        }
     }
 }

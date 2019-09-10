@@ -55,7 +55,12 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             language = languageEditText.getValue(),
             myriadFlowId = myriadFlowId
         )
-        viewModel.fetchToken(tokenUrlEditText.getValue(), tokenParams, this::startPaymentProcess, this::onError)
+        viewModel.fetchToken(
+            tokenUrlEditText.getValue(),
+            tokenParams,
+            this::startPaymentProcess,
+            this::onError
+        )
     }
 
     private fun EditText.getValue(): String {
@@ -119,10 +124,6 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         showToast(R.string.session_expired)
     }
 
-    override fun onRedirected(url: String) {
-        showToast(R.string.redirection_requested)
-    }
-
     override fun onClose() {
         showToast(R.string.close_requested)
     }
@@ -130,6 +131,4 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
-
-
 }
