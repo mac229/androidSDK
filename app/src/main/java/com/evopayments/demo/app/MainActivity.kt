@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
-    private var myriadFlowId: String = "sdk-" + Integer.toHexString( (Math.random() * Integer.MAX_VALUE).roundToInt() ).substring(0,5)
+    private var myriadFlowId: String = viewModel.generateFlowId()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,6 +8,7 @@ import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.roundToInt
 import kotlin.collections.Map as Map1
 
 /**
@@ -35,6 +36,10 @@ class MainViewModel : ViewModel() {
 
     fun resolveCashierUrl(customUrl: String): String {
         return if (customUrl.isBlank())  TEST_CASHIER_URL else customUrl;
+    }
+
+    fun generateFlowId(): String {
+        return "sdk-" + Integer.toHexString( (Math.random() * Integer.MAX_VALUE).roundToInt() ).substring(0,5)
     }
 
     companion object {
