@@ -17,14 +17,14 @@ object Communication {
     lateinit var apiService: ApiService
 
     init {
-        setTokenUrl(DEFAULT_URL)
+        reinit(DEFAULT_URL)
     }
 
     private fun getHttpClient() = OkHttpClient.Builder().addInterceptor(getLoggingInterceptor()).build()
 
     private fun getLoggingInterceptor() = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
-    fun setTokenUrl(url:String) {
+    fun reinit(url:String) {
         tokenUrl = url
         val retrofit = Retrofit
             .Builder()

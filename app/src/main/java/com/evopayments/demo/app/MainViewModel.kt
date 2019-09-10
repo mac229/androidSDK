@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.PaymentDataResponse
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 
 /**
@@ -16,8 +17,8 @@ class MainViewModel : ViewModel() {
 
 
 
-    fun fetchToken(tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
-
+    fun fetchToken(tokenUrl:String, tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+        Communication.reinit(tokenUrl)
         val apiService = Communication.apiService
 
         viewModelScope.launch {
@@ -31,8 +32,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    companion object {
+    fun resolveCashierUrl(customUrl: String): String {
+        return if (customUrl.isBlank())  TEST_CASHIER_URL else customUrl;
+    }
 
+    companion object {
+        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
         private val TAG = MainViewModel::class.java.simpleName
     }
+
 }

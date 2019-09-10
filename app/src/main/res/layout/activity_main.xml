@@ -106,7 +106,7 @@
 		<androidx.appcompat.widget.AppCompatTextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="leave empty to use server config:"
+			android:text="@string/leave_to_use_server_cfg"
 			/>
 
 		<androidx.appcompat.widget.AppCompatEditText

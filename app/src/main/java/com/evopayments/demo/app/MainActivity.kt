@@ -5,7 +5,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
 import com.evopayments.demo.api.Communication
@@ -55,8 +54,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             "myriadFlowId" to myriadFlowId
         )
 
-        Communication.setTokenUrl(tokenUrlEditText.getValue())
-        viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
+        viewModel.fetchToken(tokenUrlEditText.getValue(), tokenParams, this::startPaymentProcess, this::onError)
     }
 
     private fun EditText.getValue(): String {
@@ -64,11 +62,13 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun showRawWebDemo() {
-        var cashierUrl = cashierUrlEditText.getValue();
-        if(cashierUrl == "") {
-            cashierUrl = TEST_CASHIER_URL
-        }
-        val dialogFragment = PaymentDialogFragment.newInstance("", cashierUrl, "", myriadFlowId)
+        val cashierUrl = viewModel.resolveCashierUrl(cashierUrlEditText.getValue())
+        val dialogFragment = PaymentDialogFragment.newInstance(
+            merchantId = "",
+            cashierUrl = cashierUrl,
+            token = "",
+            myriadFlowId = myriadFlowId
+        )
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -77,7 +77,12 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
-        val dialogFragment = PaymentDialogFragment.newInstance(merchantId, data.cashierUrl, data.token, myriadFlowId)
+        val dialogFragment = PaymentDialogFragment.newInstance(
+            merchantId,
+            data.cashierUrl,
+            data.token,
+            myriadFlowId
+        )
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -126,7 +131,5 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
 
-    companion object {
-        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
-    }
+
 }
