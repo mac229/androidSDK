@@ -1,5 +1,6 @@
 package com.evopayments.demo.api
 
+import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
@@ -14,6 +15,6 @@ interface ApiService {
     @POST("tokenJson")
     @FormUrlEncoded
     suspend fun getToken(
-        @FieldMap tokenParams: Map<String, String>
+        @FieldMap tokenParams: DemoTokenParameters
     ): PaymentDataResponse
 }

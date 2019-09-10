@@ -1,13 +1,14 @@
 package com.evopayments.demo.app
 
 import android.util.Log
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.evopayments.demo.api.Communication
+import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.Map as Map1
 
 /**
  * Created by Maciej Kozłowski on 2019-08-01.
@@ -17,7 +18,7 @@ class MainViewModel : ViewModel() {
 
 
 
-    fun fetchToken(tokenUrl:String, tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+    fun fetchToken(tokenUrl:String, tokenParams: DemoTokenParameters, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
         Communication.reinit(tokenUrl)
         val apiService = Communication.apiService
 

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
 import com.evopayments.demo.api.Communication
+import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
@@ -29,31 +30,31 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun setDefaults() {
-        merchantIdEditText.setTextKeepState("167885")
-        passwordEditText.setTextKeepState("56789")
-        customerIdEditText.setTextKeepState("lovelyrita")
-        currencyEditText.setTextKeepState("PLN")
-        countryEditText.setTextKeepState("PL")
-        amountEditText.setTextKeepState("2")
+        val defaults = DemoTokenParameters()
+        merchantIdEditText.setText(defaults.get("merchantId"))
+        passwordEditText.setTextKeepState(defaults.get("password"))
+        customerIdEditText.setTextKeepState(defaults.get("customerId"))
+        currencyEditText.setTextKeepState(defaults.get("currency"))
+        countryEditText.setTextKeepState(defaults.get("country"))
+        amountEditText.setTextKeepState(defaults.get("amount"))
+        languageEditText.setTextKeepState(defaults.get("language"))
+
         tokenUrlEditText.setTextKeepState(Communication.getTokenUrl())
-        languageEditText.setTextKeepState("pl")
     }
 
     private fun fetchToken() {
         this.merchantId = merchantIdEditText.getValue()
-        val tokenParams = hashMapOf(
-            "merchantId" to merchantId,
-            "password" to passwordEditText.getValue(),
-            "customerId" to customerIdEditText.getValue(),
-            "currency" to currencyEditText.getValue(),
-            "country" to countryEditText.getValue(),
-            "amount" to amountEditText.getValue(),
-            "action" to actionSpinner.selectedItem.toString(),
-            "allowOriginUrl" to "http://example.com",
-            "language" to languageEditText.getValue(),
-            "myriadFlowId" to myriadFlowId
+        val tokenParams = DemoTokenParameters(
+            merchantId = merchantId,
+            password = passwordEditText.getValue(),
+            customerId = customerIdEditText.getValue(),
+            currency = currencyEditText.getValue(),
+            country = countryEditText.getValue(),
+            amount = amountEditText.getValue(),
+            action = actionSpinner.selectedItem.toString(),
+            language = languageEditText.getValue(),
+            myriadFlowId = myriadFlowId
         )
-
         viewModel.fetchToken(tokenUrlEditText.getValue(), tokenParams, this::startPaymentProcess, this::onError)
     }
 
