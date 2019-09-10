@@ -1,12 +1,15 @@
 package com.evopayments.demo.app
 
 import android.util.Log
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.evopayments.demo.api.Communication
+import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.math.roundToInt
+import kotlin.collections.Map as Map1
 
 /**
  * Created by Maciej Kozłowski on 2019-08-01.
@@ -14,9 +17,12 @@ import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
-    private val apiService = Communication.apiService
 
-    fun fetchToken(tokenParams: Map<String, String>, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+
+    fun fetchToken(tokenUrl:String, tokenParams: DemoTokenParameters, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
+        Communication.reinit(tokenUrl)
+        val apiService = Communication.apiService
+
         viewModelScope.launch {
             try {
                 val result = apiService.getToken(tokenParams)
@@ -28,8 +34,17 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    companion object {
+    fun resolveCashierUrl(customUrl: String): String {
+        return if (customUrl.isBlank())  TEST_CASHIER_URL else customUrl;
+    }
 
+    fun generateFlowId(): String {
+        return "sdk-" + Integer.toHexString( (Math.random() * Integer.MAX_VALUE).roundToInt() ).substring(0,5)
+    }
+
+    companion object {
+        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
         private val TAG = MainViewModel::class.java.simpleName
     }
+
 }

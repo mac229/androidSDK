@@ -13,7 +13,15 @@
     <string name="amount">amount</string>
     <string name="currency_code">currency code</string>
     <string name="country_code">country code</string>
-    <string name="show_test">Show test screen</string>
+    <string name="show_test">Show web UI test screen</string>
     <string name="redirection_requested">redirection requested</string>
     <string name="close_requested">Closing redir window requested</string>
+    <string name="token_url">token provider URL</string>
+    <string name="cashier_url">Cashier URL</string>
+    <string name="payment_result_undetermined">We could not confirm the result of the transaction. Please contact the
+        merchant.
+    </string>
+    <string name="payment_started">The payment process has started</string>
+    <string name="language_code">language code</string>
+	<string name="leave_to_use_server_cfg">leave empty to use server config:</string>
 </resources>

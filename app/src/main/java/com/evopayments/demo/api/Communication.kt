@@ -11,22 +11,32 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object Communication {
 
-    private const val BASE_URL = "https://cashierui-responsivedev.test.myriadpayments.com/ajax/"
+    private const val DEFAULT_URL = "https://cashierui-responsivedev.test.myriadpayments.com/ajax/"
+    private var tokenUrl = ""
 
-    val apiService: ApiService
+    lateinit var apiService: ApiService
 
     init {
-        val retrofit = Retrofit
-            .Builder()
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(getHttpClient())
-            .baseUrl(BASE_URL)
-            .build()
-
-        apiService = retrofit.create(ApiService::class.java)
+        reinit(DEFAULT_URL)
     }
 
     private fun getHttpClient() = OkHttpClient.Builder().addInterceptor(getLoggingInterceptor()).build()
 
     private fun getLoggingInterceptor() = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+
+    fun reinit(url:String) {
+        tokenUrl = url
+        val retrofit = Retrofit
+            .Builder()
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(getHttpClient())
+            .baseUrl(url)
+            .build()
+
+        apiService = retrofit.create(ApiService::class.java)
+    }
+
+    fun getTokenUrl():String {
+        return tokenUrl
+    }
 }

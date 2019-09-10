@@ -5,54 +5,71 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.evopayments.demo.R
+import com.evopayments.demo.api.Communication
+import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
-    private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
+    private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
+    private var myriadFlowId: String = viewModel.generateFlowId()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startPaymentButton.setOnClickListener { fetchToken() }
-        showTestButton.setOnClickListener { showTest() }
-        //defaults
-        merchantIdEditText.setTextKeepState("167885")
-        passwordEditText.setTextKeepState("56789")
-        customerIdEditText.setTextKeepState("lovelyrita")
-        currencyEditText.setTextKeepState("PLN")
-        countryEditText.setTextKeepState("PL")
-        amountEditText.setTextKeepState("2")
+        showTestButton.setOnClickListener { showRawWebDemo() }
+        setDefaults()
+    }
+
+    private fun setDefaults() {
+        val defaults = DemoTokenParameters()
+        merchantIdEditText.setText(defaults.get("merchantId"))
+        passwordEditText.setTextKeepState(defaults.get("password"))
+        customerIdEditText.setTextKeepState(defaults.get("customerId"))
+        currencyEditText.setTextKeepState(defaults.get("currency"))
+        countryEditText.setTextKeepState(defaults.get("country"))
+        amountEditText.setTextKeepState(defaults.get("amount"))
+        languageEditText.setTextKeepState(defaults.get("language"))
+
+        tokenUrlEditText.setTextKeepState(Communication.getTokenUrl())
     }
 
     private fun fetchToken() {
         this.merchantId = merchantIdEditText.getValue()
-        val tokenParams = hashMapOf(
-            "merchantId" to merchantId,
-            "password" to passwordEditText.getValue(),
-            "customerId" to customerIdEditText.getValue(),
-            "currency" to currencyEditText.getValue(),
-            "country" to countryEditText.getValue(),
-            "amount" to amountEditText.getValue(),
-            "action" to actionSpinner.selectedItem.toString(),
-            "allowOriginUrl" to "http://example.com"
+        val tokenParams = DemoTokenParameters(
+            merchantId = merchantId,
+            password = passwordEditText.getValue(),
+            customerId = customerIdEditText.getValue(),
+            currency = currencyEditText.getValue(),
+            country = countryEditText.getValue(),
+            amount = amountEditText.getValue(),
+            action = actionSpinner.selectedItem.toString(),
+            language = languageEditText.getValue(),
+            myriadFlowId = myriadFlowId
         )
-
-        viewModel.fetchToken(tokenParams, this::startPaymentProcess, this::onError)
+        viewModel.fetchToken(tokenUrlEditText.getValue(), tokenParams, this::startPaymentProcess, this::onError)
     }
 
     private fun EditText.getValue(): String {
         return text.toString()
     }
 
-    private fun showTest() {
-        val dialogFragment = PaymentDialogFragment.newInstance("", TEST_CASHIER_URL, "")
+    private fun showRawWebDemo() {
+        val cashierUrl = viewModel.resolveCashierUrl(cashierUrlEditText.getValue())
+        val dialogFragment = PaymentDialogFragment.newInstance(
+            merchantId = "",
+            cashierUrl = cashierUrl,
+            token = "",
+            myriadFlowId = myriadFlowId
+        )
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -61,7 +78,12 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
-        val dialogFragment = PaymentDialogFragment.newInstance(merchantId, data.cashierUrl, data.token)
+        val dialogFragment = PaymentDialogFragment.newInstance(
+            merchantId,
+            data.cashierUrl,
+            data.token,
+            myriadFlowId
+        )
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
@@ -71,6 +93,10 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private fun onError() {
         showToast(R.string.failed_starting_payment_process)
+    }
+
+    override fun onPaymentStarted() {
+        showToast(R.string.payment_started)
     }
 
     override fun onPaymentSuccessful() {
@@ -85,11 +111,15 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         PaymentFailedDialogFragment.newInstance().show(supportFragmentManager, null)
     }
 
+    override fun onPaymentUndetermined() {
+        showToast(R.string.payment_result_undetermined)
+    }
+
     override fun onSessionExpired() {
         showToast(R.string.session_expired)
     }
 
-    override fun onRedirected() {
+    override fun onRedirected(url: String) {
         showToast(R.string.redirection_requested)
     }
 
@@ -102,7 +132,5 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
 
-    companion object {
-        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
-    }
+
 }

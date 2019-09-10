@@ -2,13 +2,17 @@ package com.evopayments.sdk
 
 interface EvoPaymentsCallback {
 
+    fun onPaymentStarted()
+
     fun onPaymentSuccessful()
 
     fun onPaymentCancelled()
 
     fun onPaymentFailed()
 
-    fun onRedirected()
+    fun onPaymentUndetermined()
+
+    fun onRedirected(url: String)
 
     fun onClose()
 
