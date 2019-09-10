@@ -1,6 +1,5 @@
 package com.evopayments.sdk
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -15,7 +14,6 @@ import com.evopayments.sdk.redirect.RedirectCallback
 import com.evopayments.sdk.redirect.WebDialogFragment
 import java.util.concurrent.TimeUnit
 
-@SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
 class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
