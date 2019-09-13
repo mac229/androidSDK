@@ -13,13 +13,12 @@ import com.evopayments.demo.api.model.PaymentDataResponse
 import com.evopayments.sdk.EvoPaymentsCallback
 import com.evopayments.sdk.PaymentDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private val viewModel by lazy { ViewModelProviders.of(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
-    private var myriadFlowId: String = viewModel.generateFlowId()
+    private var myriadFlowId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +26,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         startPaymentButton.setOnClickListener { fetchToken() }
         showTestButton.setOnClickListener { showRawWebDemo() }
         setDefaults()
+        myriadFlowId = viewModel.generateFlowId()
     }
 
     private fun setDefaults() {
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     }
 
     override fun onRedirected(url: String) {
-        showToast(R.string.redirection_requested)
+        Toast.makeText(getApplicationContext(), "redirection to: " + url, Toast.LENGTH_LONG).show();
     }
 
     override fun onClose() {
