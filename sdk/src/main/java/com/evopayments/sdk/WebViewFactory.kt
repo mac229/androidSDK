@@ -13,10 +13,13 @@ import android.webkit.WebViewClient
 @Suppress("SetJavaScriptEnabled", "AddJavascriptInterface")
 internal object WebViewFactory {
 
-    fun createWebView(context: Context, jsInterface: Any, onError: () -> Unit): WebView {
+    fun createWebView(context: Context, jsInterface: Any?, onError: () -> Unit): WebView {
         return WebView(context).apply {
-            settings.javaScriptEnabled = true
-            addJavascriptInterface(jsInterface, jsInterface.javaClass.simpleName)
+            jsInterface?.let {
+                settings.javaScriptEnabled = true
+                addJavascriptInterface(it, it.javaClass.simpleName)
+            }
+
             webViewClient = PaymentWebViewClient(onError)
         }
     }

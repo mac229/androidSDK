@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.evopayments.evocashierlib.R
 import com.evopayments.sdk.WebViewFactory
@@ -19,7 +17,7 @@ class WebDialogFragment : DialogFragment() {
     private lateinit var callback: RedirectCallback
 
     private val webView by lazy {
-        WebViewFactory.createWebView(context!!, JSInterface(), this::onWebViewError)
+        WebViewFactory.createWebView(context!!, null, this::onWebViewError)
     }
 
     override fun onAttach(context: Context) {
@@ -48,23 +46,6 @@ class WebDialogFragment : DialogFragment() {
     private fun onWebViewError() {
         callback.onWebViewError()
         dismiss()
-    }
-
-    private inner class JSInterface {
-
-        @JavascriptInterface
-        fun success() {
-            // TODO
-            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show()
-            dismiss()
-        }
-
-        @JavascriptInterface
-        fun failure() {
-            // TODO
-            Toast.makeText(context, "failure", Toast.LENGTH_SHORT).show()
-            dismiss()
-        }
     }
 
     companion object {

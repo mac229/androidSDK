@@ -22,6 +22,8 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         WebViewFactory.createWebView(context!!, JSInterface(), this::onWebViewError)
     }
 
+    private var redirectDialogFragment: WebDialogFragment? = null
+
     private val timeoutInMs by lazy { arguments!!.getLong(EXTRA_TIMEOUT_IN_MS) }
     private val handler by lazy { Handler() }
     private val sessionExpiredRunnable by lazy { Runnable(this::onSessionExpired) }
@@ -124,17 +126,18 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
         @JavascriptInterface
         fun redirected(url: String) {
-            childFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .add(WebDialogFragment.newInstance(url), WebDialogFragment.TAG)
-                .commit()
+            redirectDialogFragment = WebDialogFragment.newInstance(url).also {
+                childFragmentManager
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .add(it, WebDialogFragment.TAG)
+                    .commit()
+            }
         }
 
         @JavascriptInterface
         fun close() {
-            paymentCallback.onClose()
-            dismiss()
+            redirectDialogFragment?.dismiss()
         }
     }
 

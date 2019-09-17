@@ -12,7 +12,5 @@ interface EvoPaymentsCallback {
 
     fun onPaymentUndetermined()
 
-    fun onClose()
-
     fun onSessionExpired() = Unit
 }

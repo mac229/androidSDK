@@ -124,10 +124,6 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         showToast(R.string.session_expired)
     }
 
-    override fun onClose() {
-        showToast(R.string.close_requested)
-    }
-
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
