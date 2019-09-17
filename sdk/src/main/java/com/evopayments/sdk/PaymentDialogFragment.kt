@@ -83,7 +83,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     }
 
     override fun onWebViewError() {
-        paymentCallback.onPaymentFailed()
+        paymentCallback.onPaymentUndetermined()
         dismiss()
     }
 
