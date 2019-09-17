@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         startPaymentButton.setOnClickListener { fetchToken() }
         showTestButton.setOnClickListener { showRawWebDemo() }
         setDefaults()
+        myriadFlowId = viewModel.generateFlowId()
     }
 
     private fun setDefaults() {
