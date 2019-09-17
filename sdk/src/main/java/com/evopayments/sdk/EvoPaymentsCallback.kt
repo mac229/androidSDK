@@ -12,11 +12,5 @@ interface EvoPaymentsCallback {
 
     fun onPaymentUndetermined()
 
-    fun onRedirected(url: String)
-
-    fun onClose()
-
     fun onSessionExpired() = Unit
-
-
 }

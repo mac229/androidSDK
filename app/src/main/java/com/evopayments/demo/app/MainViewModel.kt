@@ -6,10 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import kotlinx.coroutines.withContext
+import okhttp3.internal.toHexString
 import kotlin.math.roundToInt
-import kotlin.collections.Map as Map1
 
 /**
  * Created by Maciej Kozłowski on 2019-08-01.
@@ -17,33 +18,48 @@ import kotlin.collections.Map as Map1
 
 class MainViewModel : ViewModel() {
 
-
-
-    fun fetchToken(tokenUrl:String, tokenParams: DemoTokenParameters, onSuccess: (PaymentDataResponse) -> Unit, onError: () -> Unit) {
-        Communication.reinit(tokenUrl)
-        val apiService = Communication.apiService
-
+    fun fetchToken(
+        tokenUrl: String,
+        tokenParams: DemoTokenParameters,
+        onSuccess: (PaymentDataResponse) -> Unit,
+        onError: () -> Unit
+    ) {
         viewModelScope.launch {
-            try {
-                val result = apiService.getToken(tokenParams)
-                onSuccess(result)
-            } catch (exception: Exception) {
-                Log.e(TAG, "Error", exception)
-                onError()
+            withContext(Dispatchers.IO) {
+                request(tokenUrl, tokenParams, onSuccess, onError)
             }
         }
     }
 
+    private suspend fun request(
+        tokenUrl: String,
+        tokenParams: DemoTokenParameters,
+        onSuccess: (PaymentDataResponse) -> Unit,
+        onError: () -> Unit
+    ) {
+        try {
+            Communication.reinit(tokenUrl)
+            val apiService = Communication.apiService
+            val result = apiService.getToken(tokenParams)
+            onSuccess(result)
+        } catch (exception: Exception) {
+            Log.e(TAG, "Error", exception)
+            onError()
+        }
+    }
+
     fun resolveCashierUrl(customUrl: String): String {
-        return if (customUrl.isBlank())  TEST_CASHIER_URL else customUrl;
+        return if (customUrl.isBlank()) TEST_CASHIER_URL else customUrl
     }
 
     fun generateFlowId(): String {
-        return "sdk-" + Integer.toHexString( (Math.random() * Integer.MAX_VALUE).roundToInt() ).substring(0,5)
+        val randomString = (Math.random() * Integer.MAX_VALUE).roundToInt().toHexString()
+        return "sdk-" + randomString.take(5)
     }
 
     companion object {
-        const val TEST_CASHIER_URL = "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
+        const val TEST_CASHIER_URL =
+            "https://cashierui-responsivedev.test.myriadpayments.com/react-frontend/index.html"
         private val TAG = MainViewModel::class.java.simpleName
     }
 
