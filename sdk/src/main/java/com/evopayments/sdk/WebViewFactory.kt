@@ -16,9 +16,9 @@ internal object WebViewFactory {
     fun createWebView(context: Context, jsInterface: Any?, onError: () -> Unit): WebView {
         return WebView(context).apply {
             jsInterface?.let {
-                settings.javaScriptEnabled = true
                 addJavascriptInterface(it, it.javaClass.simpleName)
             }
+            settings.javaScriptEnabled = true
 
             webViewClient = PaymentWebViewClient(onError)
         }
