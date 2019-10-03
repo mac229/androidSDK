@@ -41,10 +41,10 @@ class MainViewModel : ViewModel() {
             Communication.reinit(tokenUrl)
             val apiService = Communication.apiService
             val result = apiService.getToken(tokenParams)
-            onSuccess(result)
+            withContext(Dispatchers.Main) { onSuccess(result) }
         } catch (exception: Exception) {
             Log.e(TAG, "Error", exception)
-            onError()
+            withContext(Dispatchers.Main) { onError() }
         }
     }
 
