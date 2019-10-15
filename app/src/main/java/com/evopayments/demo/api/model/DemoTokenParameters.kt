@@ -1,15 +1,16 @@
 package com.evopayments.demo.api.model
 
 class DemoTokenParameters(
-    merchantId: String = "167885",
-    password: String = "56789",
+    merchantId: String = "176282",
+    password: String = "12345",
     customerId: String = "lovelyrita",
     currency: String = "PLN",
     country: String = "PL",
     amount: String = "2.00",
     action: String = "AUTH",
     allowOriginUrl: String = "http://example.com",
-    language: String = "pl",
+    merchantLandingPageUrl: String = "https://ptsv2.com/t/ipgmobilesdktest",
+    language: String = "en",
     myriadFlowId: String = ""
 ) : HashMap<String, String>() {
 
@@ -23,7 +24,8 @@ class DemoTokenParameters(
         put(ACTION, action)
         put(ALLOW_ORIGIN_URL, allowOriginUrl)
         put(LANGUAGE, language)
-        put(MY_RIAD_FLOW_ID, myriadFlowId)
+        put(MYRIAD_FLOW_ID, myriadFlowId)
+        put(MERCHANT_LANDING_PAGE_URL, merchantLandingPageUrl)
     }
 
     fun getMerchantId() = get(MERCHANT_ID)
@@ -42,9 +44,11 @@ class DemoTokenParameters(
 
     fun getAllowOriginUrl() = get(ALLOW_ORIGIN_URL)
 
+    fun getMerchantLandingPageUrl() = get(MERCHANT_LANDING_PAGE_URL)
+
     fun getLanguage() = get(LANGUAGE)
 
-    fun getMyRiadFlowId() = get(MY_RIAD_FLOW_ID)
+    fun getMyriadFlowId() = get(MYRIAD_FLOW_ID)
 
     companion object {
         private const val MERCHANT_ID = "merchantId"
@@ -55,7 +59,8 @@ class DemoTokenParameters(
         private const val AMOUNT = "amount"
         private const val ACTION = "action"
         private const val ALLOW_ORIGIN_URL = "allowOriginUrl"
+        private const val MERCHANT_LANDING_PAGE_URL = "merchantLandingPageUrl"
         private const val LANGUAGE = "language"
-        private const val MY_RIAD_FLOW_ID = "myriadFlowId"
+        private const val MYRIAD_FLOW_ID = "myriadFlowId"
     }
 }
