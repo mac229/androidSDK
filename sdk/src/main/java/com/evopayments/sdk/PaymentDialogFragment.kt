@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.evopayments.evocashierlib.R
 import com.evopayments.sdk.redirect.RedirectCallback
