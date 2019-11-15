@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
     private lateinit var myriadFlowId: String
+    private lateinit var merchantLandingPageUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         languageEditText.setText(defaults.getLanguage())
 
         tokenUrlEditText.setText(Communication.getTokenUrl())
+        merchantLandingPageUrl = defaults.getMerchantLandingPageUrl()!!
     }
 
     private fun fetchToken() {
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             amount = amountEditText.getValue(),
             action = actionSpinner.selectedItem.toString(),
             language = languageEditText.getValue(),
+            merchantLandingPageUrl = merchantLandingPageUrl,
             myriadFlowId = myriadFlowId
         )
         viewModel.fetchToken(
