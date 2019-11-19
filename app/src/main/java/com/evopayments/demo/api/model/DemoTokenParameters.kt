@@ -11,7 +11,9 @@ class DemoTokenParameters(
     allowOriginUrl: String = "http://example.com",
     merchantLandingPageUrl: String = "https://ptsv2.com/t/ipgmobilesdktest",
     language: String = "en",
-    myriadFlowId: String = ""
+    myriadFlowId: String = "",
+    customerFirstName: String = "Jan",
+    customerLastName: String = "Mobile"
 ) : HashMap<String, String>() {
 
     init {
@@ -26,6 +28,8 @@ class DemoTokenParameters(
         put(LANGUAGE, language)
         put(MYRIAD_FLOW_ID, myriadFlowId)
         put(MERCHANT_LANDING_PAGE_URL, merchantLandingPageUrl)
+        put(CUSTOMER_FIRST_NAME, customerFirstName)
+        put(CUSTOMER_LAST_NAME, customerLastName)
     }
 
     fun getMerchantId() = get(MERCHANT_ID)
@@ -50,6 +54,10 @@ class DemoTokenParameters(
 
     fun getMyriadFlowId() = get(MYRIAD_FLOW_ID)
 
+    fun getCustomerFirstName() = get(CUSTOMER_FIRST_NAME)
+
+    fun getCustomerLastName() = get(CUSTOMER_LAST_NAME)
+
     companion object {
         private const val MERCHANT_ID = "merchantId"
         private const val PASSWORD = "password"
@@ -62,5 +70,7 @@ class DemoTokenParameters(
         private const val MERCHANT_LANDING_PAGE_URL = "merchantLandingPageUrl"
         private const val LANGUAGE = "language"
         private const val MYRIAD_FLOW_ID = "myriadFlowId"
+        private const val CUSTOMER_FIRST_NAME = "customerFirstName"
+        private const val CUSTOMER_LAST_NAME = "customerLastName"
     }
 }
