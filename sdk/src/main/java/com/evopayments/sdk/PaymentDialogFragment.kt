@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,51 +94,66 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     }
 
     private inner class JSInterface {
+        private val handler = Handler(Looper.getMainLooper())
 
         @JavascriptInterface
         fun paymentStarted() {
-            paymentCallback.onPaymentStarted()
-            dismiss()
+            handler.post {
+                paymentCallback.onPaymentStarted()
+                dismiss()
+            }
         }
 
         @JavascriptInterface
         fun paymentSuccessful() {
-            paymentCallback.onPaymentSuccessful()
-            dismiss()
+            handler.post {
+                paymentCallback.onPaymentSuccessful()
+                dismiss()
+            }
         }
 
         @JavascriptInterface
         fun paymentCancelled() {
-            paymentCallback.onPaymentCancelled()
-            dismiss()
+            handler.post {
+                paymentCallback.onPaymentCancelled()
+                dismiss()
+            }
         }
 
         @JavascriptInterface
         fun paymentFailed() {
-            paymentCallback.onPaymentFailed()
-            dismiss()
+            handler.post {
+                paymentCallback.onPaymentFailed()
+                dismiss()
+            }
         }
 
         @JavascriptInterface
         fun paymentUndetermined() {
-            paymentCallback.onPaymentUndetermined()
-            dismiss()
+            handler.post {
+                paymentCallback.onPaymentUndetermined()
+                dismiss()
+            }
         }
 
         @JavascriptInterface
         fun redirected(url: String) {
-            redirectDialogFragment = WebDialogFragment.newInstance(url).also {
-                childFragmentManager
-                    .beginTransaction()
-                    .addToBackStack(null)
-                    .add(it, WebDialogFragment.TAG)
-                    .commit()
+            handler.post {
+                redirectDialogFragment = WebDialogFragment.newInstance(url).also {
+                    childFragmentManager
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .add(it, WebDialogFragment.TAG)
+                        .commit()
+                }
             }
         }
 
         @JavascriptInterface
         fun close() {
-            redirectDialogFragment?.dismiss()
+            handler.post {
+                redirectDialogFragment?.dismiss()
+            }
         }
     }
 
