@@ -1,6 +1,8 @@
 package com.evopayments.sdk
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -10,9 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import androidx.fragment.app.DialogFragment
+import com.evopayments.evocashierlib.BuildConfig
 import com.evopayments.evocashierlib.R
 import com.evopayments.sdk.redirect.RedirectCallback
 import com.evopayments.sdk.redirect.WebDialogFragment
+import com.google.android.gms.wallet.*
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class PaymentDialogFragment : DialogFragment(), RedirectCallback {
@@ -28,6 +33,21 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     private val timeoutInMs by lazy { arguments!!.getLong(EXTRA_TIMEOUT_IN_MS) }
     private val handler by lazy { Handler() }
     private val sessionExpiredRunnable by lazy { Runnable(this::onSessionExpired) }
+    private val environment by lazy {
+        if(BuildConfig.DEBUG) {
+            WalletConstants.ENVIRONMENT_TEST
+        } else {
+            WalletConstants.ENVIRONMENT_PRODUCTION
+        }
+    }
+    private val paymentsClient by lazy {
+        Wallet.getPaymentsClient(
+            requireActivity(),
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(environment)
+                .build()
+        )
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -93,8 +113,49 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         handler.removeCallbacks(sessionExpiredRunnable)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        when (requestCode) {
+            LOAD_PAYMENT_DATA_REQUEST_CODE -> handleLoadPaymentResult(resultCode, data)
+        }
+    }
+
+    private fun handleLoadPaymentResult(resultCode: Int, data: Intent) {
+        when (resultCode) {
+            Activity.RESULT_OK             -> onGooglePaymentSuccess(data)
+            Activity.RESULT_CANCELED       -> paymentCallback.onPaymentCancelled() // TODO notify backend probably?
+            AutoResolveHelper.RESULT_ERROR -> paymentCallback.onPaymentFailed() // TODO notify backend probably?
+        }
+    }
+
+    private fun onGooglePaymentSuccess(data: Intent) {
+        val paymentToken = PaymentData.getFromIntent(data)!!
+            .toJson()
+            .let(::JSONObject)
+            .getJSONObject("paymentMethodData")
+            .getJSONObject("tokenizationData")
+            .getString("token")
+        sendTokenToWebView(paymentToken)
+    }
+
+    private fun sendTokenToWebView(token: String) {
+        // TODO call js method when it's implemented
+    }
+
     private inner class JSInterface {
         private val handler = Handler(Looper.getMainLooper())
+
+        @JavascriptInterface
+        fun processGPayPayment(paymentDataRequest: String) {
+            val request = PaymentDataRequest.fromJson(paymentDataRequest)
+            if (request != null) {
+                AutoResolveHelper.resolveTask(
+                    paymentsClient.loadPaymentData(request),
+                    requireActivity(),
+                    LOAD_PAYMENT_DATA_REQUEST_CODE
+                )
+            }
+
+        }
 
         @JavascriptInterface
         fun paymentStarted() {
@@ -169,6 +230,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         private const val EXTRA_URL = "extra_cashier_url"
         private const val EXTRA_TOKEN = "extra_token"
         private const val EXTRA_TIMEOUT_IN_MS = "extra_timeout_in_ms"
+        private const val LOAD_PAYMENT_DATA_REQUEST_CODE = 7373
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
