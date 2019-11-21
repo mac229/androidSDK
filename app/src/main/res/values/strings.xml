@@ -23,5 +23,7 @@
     </string>
     <string name="payment_started">The payment process has started</string>
     <string name="language_code">language code</string>
+    <string name="customer_first_name">customer first name</string>
+    <string name="customer_last_name">customer last name</string>
 	<string name="leave_to_use_server_cfg">leave empty to use server config:</string>
 </resources>

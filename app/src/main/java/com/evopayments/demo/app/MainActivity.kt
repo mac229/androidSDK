@@ -1,6 +1,7 @@
 package com.evopayments.demo.app
 
 import android.os.Bundle
+import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         showTestButton.setOnClickListener { showRawWebDemo() }
         setDefaults()
         myriadFlowId = viewModel.generateFlowId()
+        setWebContentsDebuggingEnabled(true)
     }
 
     private fun setDefaults() {
@@ -40,6 +42,8 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
         countryEditText.setText(defaults.getCountry())
         amountEditText.setText(defaults.getAmount())
         languageEditText.setText(defaults.getLanguage())
+        customerFirstNameEditText.setText(defaults.getCustomerFirstName())
+        customerLastNameEditText.setText(defaults.getCustomerLastName())
 
         tokenUrlEditText.setText(Communication.getTokenUrl())
         merchantLandingPageUrl = defaults.getMerchantLandingPageUrl()!!
@@ -57,7 +61,9 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
             action = actionSpinner.selectedItem.toString(),
             language = languageEditText.getValue(),
             merchantLandingPageUrl = merchantLandingPageUrl,
-            myriadFlowId = myriadFlowId
+            myriadFlowId = myriadFlowId,
+            customerFirstName = customerFirstNameEditText.getValue(),
+            customerLastName = customerLastNameEditText.getValue()
         )
         viewModel.fetchToken(
             tokenUrlEditText.getValue(),
