@@ -113,32 +113,38 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         handler.removeCallbacks(sessionExpiredRunnable)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             LOAD_PAYMENT_DATA_REQUEST_CODE -> handleLoadPaymentResult(resultCode, data)
         }
     }
 
-    private fun handleLoadPaymentResult(resultCode: Int, data: Intent) {
+    private fun handleLoadPaymentResult(resultCode: Int, data: Intent?) {
         when (resultCode) {
             Activity.RESULT_OK             -> onGooglePaymentSuccess(data)
-            Activity.RESULT_CANCELED       -> paymentCallback.onPaymentCancelled() // TODO notify backend probably?
-            AutoResolveHelper.RESULT_ERROR -> paymentCallback.onPaymentFailed() // TODO notify backend probably?
+            Activity.RESULT_CANCELED       -> paymentCallback.onPaymentCancelled()
+            AutoResolveHelper.RESULT_ERROR -> paymentCallback.onPaymentFailed()
         }
     }
 
-    private fun onGooglePaymentSuccess(data: Intent) {
-        val paymentToken = PaymentData.getFromIntent(data)!!
-            .toJson()
-            .let(::JSONObject)
-            .getJSONObject("paymentMethodData")
-            .getJSONObject("tokenizationData")
-            .getString("token")
-        sendTokenToWebView(paymentToken)
+    private fun onGooglePaymentSuccess(data: Intent?) {
+        val paymentToken = data
+            ?.let(PaymentData::getFromIntent)
+            ?.toJson()
+            ?.let(::JSONObject)
+            ?.getJSONObject("paymentMethodData")
+            ?.getJSONObject("tokenizationData")
+            ?.getString("token")
+
+        if(paymentToken != null) {
+            sendTokenToWebView(paymentToken)
+        } else {
+            paymentCallback.onPaymentFailed()
+        }
     }
 
     private fun sendTokenToWebView(token: String) {
-        // TODO call js method when it's implemented
+        webView.evaluateJavascript("onGPayTokenReceived($token);") { /* there's no result */ }
     }
 
     private inner class JSInterface {
