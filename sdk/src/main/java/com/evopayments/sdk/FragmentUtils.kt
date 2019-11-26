@@ -2,13 +2,12 @@ package com.evopayments.sdk
 
 import androidx.fragment.app.Fragment
 
-
-inline fun <reified T> Fragment.getListenerOrThrowException(): T {
+internal inline fun <reified T> Fragment.getListenerOrThrowException(): T {
     return getListener<T>()
         ?: throw IllegalStateException("Calling class must implement:  " + T::class.java.simpleName)
 }
 
-inline fun <reified T> Fragment.getListener(): T? {
+internal inline fun <reified T> Fragment.getListener(): T? {
     var listener = getListenerFromTargetFragment<T>()
     if (listener != null) {
         return listener
@@ -22,7 +21,7 @@ inline fun <reified T> Fragment.getListener(): T? {
     return getListenerFromActivity()
 }
 
-inline fun <reified T> getListener(target: Any?): T? {
+internal inline fun <reified T> getListener(target: Any?): T? {
     return if (T::class.java.isInstance(target)) {
         T::class.java.cast(target)
     } else {
@@ -30,14 +29,14 @@ inline fun <reified T> getListener(target: Any?): T? {
     }
 }
 
-inline fun <reified T> Fragment.getListenerFromTargetFragment(): T? {
+internal inline fun <reified T> Fragment.getListenerFromTargetFragment(): T? {
     return getListener(targetFragment)
 }
 
-inline fun <reified T> Fragment.getListenerFromParentFragment(): T? {
+internal inline fun <reified T> Fragment.getListenerFromParentFragment(): T? {
     return getListener<T>(parentFragment)
 }
 
-inline fun <reified T> Fragment.getListenerFromActivity(): T? {
+internal inline fun <reified T> Fragment.getListenerFromActivity(): T? {
     return getListener<T>(activity)
 }

@@ -20,6 +20,7 @@ import com.google.android.gms.wallet.*
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
+@Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity")
 class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
@@ -240,6 +241,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
+        @Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity")
         fun newInstance(
             merchantId: String,
             cashierUrl: String,

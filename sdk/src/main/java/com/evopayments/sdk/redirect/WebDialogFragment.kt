@@ -12,7 +12,7 @@ import com.evopayments.sdk.WebViewFactory
 import com.evopayments.sdk.getListenerOrThrowException
 
 @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-class WebDialogFragment : DialogFragment() {
+internal class WebDialogFragment : DialogFragment() {
 
     private lateinit var callback: RedirectCallback
 
