@@ -2,7 +2,13 @@
 	package="com.evopayments.evocashierlib"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	>
-	<meta-data
-		android:name="com.google.android.gms.wallet.api.enabled"
-		android:value="true" />
+
+	<application>
+
+		<activity android:name="com.evopayments.sdk.EvoPaymentActivity"/>
+
+		<meta-data
+			android:name="com.google.android.gms.wallet.api.enabled"
+			android:value="true" />
+	</application>
 </manifest>
