@@ -128,13 +128,8 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     }
 
     private fun onGooglePaymentSuccess(data: Intent?) {
-        val paymentToken = data
-            ?.let(PaymentData::getFromIntent)
-            ?.toJson()
-            ?.let(::JSONObject)
-            ?.getJSONObject("paymentMethodData")
-            ?.getJSONObject("tokenizationData")
-            ?.getString("token")
+        val processor = PaymentDataIntentProcessor(data)
+        val paymentToken = processor.getToken()
 
         if(paymentToken != null) {
             sendTokenToWebView(paymentToken)
