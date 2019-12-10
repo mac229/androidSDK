@@ -1,6 +1,6 @@
 package com.evopayments.sdk.redirect
 
-interface RedirectCallback {
+internal interface RedirectCallback {
 
     fun onWebViewError()
 }

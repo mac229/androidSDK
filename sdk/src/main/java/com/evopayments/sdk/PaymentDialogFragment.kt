@@ -20,6 +20,7 @@ import com.google.android.gms.wallet.*
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
+@Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity. It will be removed in the next version.")
 class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
@@ -233,8 +234,9 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         private const val EXTRA_TIMEOUT_IN_MS = "extra_timeout_in_ms"
         private const val LOAD_PAYMENT_DATA_REQUEST_CODE = 7373
 
-        private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
+        internal val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
+        @Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity")
         fun newInstance(
             merchantId: String,
             cashierUrl: String,
