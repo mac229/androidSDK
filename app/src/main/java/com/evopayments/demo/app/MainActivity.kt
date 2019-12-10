@@ -1,5 +1,6 @@
 package com.evopayments.demo.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.EditText
@@ -11,11 +12,11 @@ import com.evopayments.demo.R
 import com.evopayments.demo.api.Communication
 import com.evopayments.demo.api.model.DemoTokenParameters
 import com.evopayments.demo.api.model.PaymentDataResponse
-import com.evopayments.sdk.EvoPaymentsCallback
-import com.evopayments.sdk.PaymentDialogFragment
+import com.evopayments.sdk.EvoPaymentActivity
+import com.evopayments.sdk.startEvoPaymentActivityForResult
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
+class MainActivity : AppCompatActivity() {
 
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
     private var merchantId: String = ""
@@ -79,62 +80,67 @@ class MainActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     private fun showRawWebDemo() {
         val cashierUrl = viewModel.resolveCashierUrl(cashierUrlEditText.getValue())
-        val dialogFragment = PaymentDialogFragment.newInstance(
+        startEvoPaymentActivityForResult(
+            requestCode = EVO_PAYMENT_REQUEST_CODE,
             merchantId = "",
             cashierUrl = cashierUrl,
             token = "",
             myriadFlowId = myriadFlowId
         )
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .add(dialogFragment, PaymentDialogFragment.TAG)
-            .commit()
     }
 
     private fun startPaymentProcess(data: PaymentDataResponse) {
-        val dialogFragment = PaymentDialogFragment.newInstance(
+        startEvoPaymentActivityForResult(
+            EVO_PAYMENT_REQUEST_CODE,
             merchantId,
             data.cashierUrl,
             data.token,
             myriadFlowId
         )
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .add(dialogFragment, PaymentDialogFragment.TAG)
-            .commit()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EVO_PAYMENT_REQUEST_CODE) {
+            when (resultCode) {
+                EvoPaymentActivity.PAYMENT_SUCCESSFUL      -> onPaymentSuccessful()
+                EvoPaymentActivity.PAYMENT_CANCELED        -> onPaymentCancelled()
+                EvoPaymentActivity.PAYMENT_FAILED          -> onPaymentFailed()
+                EvoPaymentActivity.PAYMENT_UNDETERMINED    -> onPaymentUndetermined()
+                EvoPaymentActivity.PAYMENT_SESSION_EXPIRED -> onSessionExpired()
+            }
+        }
     }
 
     private fun onError() {
         showToast(R.string.failed_starting_payment_process)
     }
 
-    override fun onPaymentStarted() {
-        showToast(R.string.payment_started)
-    }
-
-    override fun onPaymentSuccessful() {
+    private fun onPaymentSuccessful() {
         PaymentSuccessfulDialogFragment.newInstance().show(supportFragmentManager, null)
     }
 
-    override fun onPaymentCancelled() {
+    private fun onPaymentCancelled() {
         showToast(R.string.payment_cancelled)
     }
 
-    override fun onPaymentFailed() {
+    private fun onPaymentFailed() {
         PaymentFailedDialogFragment.newInstance().show(supportFragmentManager, null)
     }
 
-    override fun onPaymentUndetermined() {
+    private fun onPaymentUndetermined() {
         showToast(R.string.payment_result_undetermined)
     }
 
-    override fun onSessionExpired() {
+    private fun onSessionExpired() {
         showToast(R.string.session_expired)
     }
 
     private fun showToast(@StringRes text: Int) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        private const val EVO_PAYMENT_REQUEST_CODE = 1000
     }
 }

@@ -5,7 +5,9 @@
 
 	<application>
 
-		<activity android:name="com.evopayments.sdk.EvoPaymentActivity"/>
+		<activity android:name="com.evopayments.sdk.EvoPaymentActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+			/>
 
 		<meta-data
 			android:name="com.google.android.gms.wallet.api.enabled"
