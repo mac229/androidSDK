@@ -13,7 +13,8 @@ class DemoTokenParameters(
     language: String = "en",
     myriadFlowId: String = "",
     customerFirstName: String = "Jan",
-    customerLastName: String = "Mobile"
+    customerLastName: String = "Mobile",
+    merchantNotificationUrl: String = "https://ptsv2.com/t/66i1s-1534805666/post"
 ) : HashMap<String, String>() {
 
     init {
@@ -30,6 +31,7 @@ class DemoTokenParameters(
         put(MERCHANT_LANDING_PAGE_URL, merchantLandingPageUrl)
         put(CUSTOMER_FIRST_NAME, customerFirstName)
         put(CUSTOMER_LAST_NAME, customerLastName)
+        put(MERCHANT_NOTIFICATION_URL, merchantNotificationUrl)
     }
 
     fun getMerchantId() = get(MERCHANT_ID)
@@ -49,6 +51,8 @@ class DemoTokenParameters(
     fun getAllowOriginUrl() = get(ALLOW_ORIGIN_URL)
 
     fun getMerchantLandingPageUrl() = get(MERCHANT_LANDING_PAGE_URL)
+
+    fun getMerchantNotificationUrl() = get(MERCHANT_NOTIFICATION_URL)
 
     fun getLanguage() = get(LANGUAGE)
 
@@ -72,5 +76,6 @@ class DemoTokenParameters(
         private const val MYRIAD_FLOW_ID = "myriadFlowId"
         private const val CUSTOMER_FIRST_NAME = "customerFirstName"
         private const val CUSTOMER_LAST_NAME = "customerLastName"
+        private const val MERCHANT_NOTIFICATION_URL = "merchantNotificationUrl"
     }
 }
