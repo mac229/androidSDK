@@ -2,6 +2,7 @@ package com.evopayments.sdk
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,13 +18,13 @@ import com.evopayments.evocashierlib.R
 import com.evopayments.sdk.redirect.RedirectCallback
 import com.evopayments.sdk.redirect.WebDialogFragment
 import com.google.android.gms.wallet.*
-import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 @Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity. It will be removed in the next version.")
 class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
+    private var onDismissCallback: OnDismissListener? = null
 
     private val webView by lazy {
         WebViewFactory.createWebView(context!!, JSInterface(), this::onWebViewError)
@@ -53,6 +54,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         paymentCallback = getListenerOrThrowException()
+        onDismissCallback = getListener()
     }
 
     override fun getTheme(): Int {
@@ -143,6 +145,11 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         webView.evaluateJavascript("onGPayTokenReceived($token);") { /* there's no result */ }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissCallback?.onDismiss()
+    }
+
     private inner class JSInterface {
         private val handler = Handler(Looper.getMainLooper())
 
@@ -218,6 +225,10 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
                 redirectDialogFragment?.dismiss()
             }
         }
+    }
+
+    interface OnDismissListener {
+        fun onDismiss()
     }
 
     companion object {

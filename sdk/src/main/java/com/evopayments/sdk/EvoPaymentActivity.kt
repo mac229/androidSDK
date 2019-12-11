@@ -2,6 +2,7 @@ package com.evopayments.sdk
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -29,7 +30,7 @@ fun Activity.startEvoPaymentActivityForResult(
     )
 }
 
-class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
+class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDialogFragment.OnDismissListener {
 
     private val merchantId by lazy { intent.getStringExtra(MERCHANT_ID) }
     private val cashierUrl by lazy { intent.getStringExtra(CASHIER_URL) }
@@ -41,6 +42,8 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
             PaymentDialogFragment.DEFAULT_TIMEOUT
         )
     }
+
+    private var isPaymentStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -68,7 +71,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
     override fun onPaymentStarted() {
-        // ignore
+        isPaymentStarted = true
     }
 
     @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
@@ -99,6 +102,16 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
     private fun finishWithResult(resultCode: Int) {
         setResult(resultCode)
         finish()
+    }
+
+    override fun onDismiss() {
+        finishWithResult(PAYMENT_CANCELED)
+    }
+
+    override fun onBackPressed() {
+        if(!isPaymentStarted) {
+            finishWithResult(PAYMENT_CANCELED)
+        }
     }
 
     companion object {
