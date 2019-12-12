@@ -114,12 +114,25 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(IS_PAYMENT_STARTED_EXTRA, isPaymentStarted)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if(savedInstanceState != null) {
+            isPaymentStarted = savedInstanceState.getBoolean(IS_PAYMENT_STARTED_EXTRA)
+        }
+    }
+
     companion object {
         private const val MERCHANT_ID = "merchant_id"
         private const val CASHIER_URL = "cashier_url"
         private const val TOKEN = "token"
         private const val MYRIAD_FLOW_ID = "myriad_flow_id"
         private const val TIMEOUT_IN_MS = "timeout_in_ms"
+        private const val IS_PAYMENT_STARTED_EXTRA = "is_payment_started"
 
         const val PAYMENT_SUCCESSFUL = 1
         const val PAYMENT_CANCELED = 2
