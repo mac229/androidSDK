@@ -11,7 +11,7 @@ allprojects {
 2. Add the dependency  
 ```groovy
 dependencies {
-    implementation 'com.github.intelligentpayments:androidSDK:0.4.0'
+    implementation 'com.github.intelligentpayments:androidSDK:0.5.1'
 }
 ```  
   
