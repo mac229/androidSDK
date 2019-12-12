@@ -2,6 +2,7 @@ package com.evopayments.sdk
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -29,7 +30,7 @@ fun Activity.startEvoPaymentActivityForResult(
     )
 }
 
-class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
+class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDialogFragment.OnDismissListener {
 
     private val merchantId by lazy { intent.getStringExtra(MERCHANT_ID) }
     private val cashierUrl by lazy { intent.getStringExtra(CASHIER_URL) }
@@ -41,6 +42,8 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
             PaymentDialogFragment.DEFAULT_TIMEOUT
         )
     }
+
+    private var isPaymentStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -68,7 +71,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
 
     @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
     override fun onPaymentStarted() {
-        // ignore
+        isPaymentStarted = true
     }
 
     @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
@@ -101,12 +104,35 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback {
         finish()
     }
 
+    override fun onDismiss() {
+        finishWithResult(PAYMENT_CANCELED)
+    }
+
+    override fun onBackPressed() {
+        if(!isPaymentStarted) {
+            finishWithResult(PAYMENT_CANCELED)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(IS_PAYMENT_STARTED_EXTRA, isPaymentStarted)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if(savedInstanceState != null) {
+            isPaymentStarted = savedInstanceState.getBoolean(IS_PAYMENT_STARTED_EXTRA)
+        }
+    }
+
     companion object {
         private const val MERCHANT_ID = "merchant_id"
         private const val CASHIER_URL = "cashier_url"
         private const val TOKEN = "token"
         private const val MYRIAD_FLOW_ID = "myriad_flow_id"
         private const val TIMEOUT_IN_MS = "timeout_in_ms"
+        private const val IS_PAYMENT_STARTED_EXTRA = "is_payment_started"
 
         const val PAYMENT_SUCCESSFUL = 1
         const val PAYMENT_CANCELED = 2
