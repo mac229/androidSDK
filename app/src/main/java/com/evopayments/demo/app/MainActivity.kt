@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private var merchantId: String = ""
     private lateinit var myriadFlowId: String
     private lateinit var merchantLandingPageUrl: String
+    private lateinit var merchantNotificationUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         tokenUrlEditText.setText(Communication.getTokenUrl())
         merchantLandingPageUrl = defaults.getMerchantLandingPageUrl()!!
+        merchantNotificationUrl = defaults.getMerchantNotificationUrl()!!
     }
 
     private fun fetchToken() {
@@ -64,7 +66,8 @@ class MainActivity : AppCompatActivity() {
             merchantLandingPageUrl = merchantLandingPageUrl,
             myriadFlowId = myriadFlowId,
             customerFirstName = customerFirstNameEditText.getValue(),
-            customerLastName = customerLastNameEditText.getValue()
+            customerLastName = customerLastNameEditText.getValue(),
+            merchantNotificationUrl = merchantNotificationUrl
         )
         viewModel.fetchToken(
             tokenUrlEditText.getValue(),
