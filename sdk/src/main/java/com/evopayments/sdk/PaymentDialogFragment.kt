@@ -112,7 +112,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
     }
 
     private fun sendTokenToWebView(token: String) {
-        webView.evaluateJavascript("onGPayTokenReceived($token);") {
+        webView.evaluateJavascript("window.JSInterface.onGPayTokenReceived($token);") {
             /* there's no result */
             Log.d("debug", it)
         }
