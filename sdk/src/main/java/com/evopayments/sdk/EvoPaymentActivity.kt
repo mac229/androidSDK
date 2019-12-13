@@ -2,12 +2,15 @@ package com.evopayments.sdk
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.evopayments.evocashierlib.BuildConfig
+import com.google.android.gms.wallet.AutoResolveHelper
+import com.google.android.gms.wallet.PaymentDataRequest
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 
 fun Activity.startEvoPaymentActivityForResult(
     requestCode: Int,
@@ -30,7 +33,8 @@ fun Activity.startEvoPaymentActivityForResult(
     )
 }
 
-class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDialogFragment.OnDismissListener {
+class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback,
+    PaymentDialogFragment.OnDismissListener {
 
     private val merchantId by lazy { intent.getStringExtra(MERCHANT_ID) }
     private val cashierUrl by lazy { intent.getStringExtra(CASHIER_URL) }
@@ -44,6 +48,22 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
     }
 
     private var isPaymentStarted: Boolean = false
+
+    private val environment by lazy {
+        if (BuildConfig.DEBUG) {
+            WalletConstants.ENVIRONMENT_TEST
+        } else {
+            WalletConstants.ENVIRONMENT_PRODUCTION
+        }
+    }
+    private val paymentsClient by lazy {
+        Wallet.getPaymentsClient(
+            this,
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(environment)
+                .build()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -69,34 +89,81 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
         }
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onPaymentStarted() {
         isPaymentStarted = true
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onPaymentSuccessful() {
         finishWithResult(PAYMENT_SUCCESSFUL)
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onPaymentCancelled() {
         finishWithResult(PAYMENT_CANCELED)
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onPaymentFailed() {
         finishWithResult(PAYMENT_FAILED)
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onPaymentUndetermined() {
         finishWithResult(PAYMENT_UNDETERMINED)
     }
 
-    @Deprecated("This method is public only for a short amount of time. It will be removed in the next release", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        "This method is public only for a short amount of time. It will be removed in the next release",
+        level = DeprecationLevel.ERROR
+    )
     override fun onSessionExpired() {
         finishWithResult(PAYMENT_SESSION_EXPIRED)
+    }
+
+    override fun handleGPayRequest(request: PaymentDataRequest) {
+        AutoResolveHelper.resolveTask(
+            paymentsClient.loadPaymentData(request),
+            this,
+            LOAD_PAYMENT_DATA_REQUEST_CODE
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LOAD_PAYMENT_DATA_REQUEST_CODE -> handleLoadPaymentResult(resultCode, data)
+        }
+    }
+
+    private fun handleLoadPaymentResult(resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK             -> onGooglePaymentSuccess(data)
+            Activity.RESULT_CANCELED       -> finishWithResult(PAYMENT_CANCELED)
+            AutoResolveHelper.RESULT_ERROR -> finishWithResult(PAYMENT_FAILED)
+        }
+    }
+
+    private fun onGooglePaymentSuccess(data: Intent?) {
+        val fragment = supportFragmentManager
+            .findFragmentByTag(PaymentDialogFragment.TAG) as PaymentDialogFragment
+        fragment.onGooglePaymentSuccess(data)
     }
 
     private fun finishWithResult(resultCode: Int) {
@@ -109,7 +176,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
     }
 
     override fun onBackPressed() {
-        if(!isPaymentStarted) {
+        if (!isPaymentStarted) {
             finishWithResult(PAYMENT_CANCELED)
         }
     }
@@ -121,7 +188,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             isPaymentStarted = savedInstanceState.getBoolean(IS_PAYMENT_STARTED_EXTRA)
         }
     }
@@ -133,6 +200,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, PaymentDial
         private const val MYRIAD_FLOW_ID = "myriad_flow_id"
         private const val TIMEOUT_IN_MS = "timeout_in_ms"
         private const val IS_PAYMENT_STARTED_EXTRA = "is_payment_started"
+        private const val LOAD_PAYMENT_DATA_REQUEST_CODE = 7373
 
         const val PAYMENT_SUCCESSFUL = 1
         const val PAYMENT_CANCELED = 2
