@@ -33,8 +33,7 @@ fun Activity.startEvoPaymentActivityForResult(
     )
 }
 
-class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback,
-    PaymentDialogFragment.OnDismissListener {
+class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissListener {
 
     private val merchantId by lazy { intent.getStringExtra(MERCHANT_ID) }
     private val cashierUrl by lazy { intent.getStringExtra(CASHIER_URL) }
@@ -186,11 +185,9 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback,
         outState.putBoolean(IS_PAYMENT_STARTED_EXTRA, isPaymentStarted)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState != null) {
-            isPaymentStarted = savedInstanceState.getBoolean(IS_PAYMENT_STARTED_EXTRA)
-        }
+        isPaymentStarted = savedInstanceState.getBoolean(IS_PAYMENT_STARTED_EXTRA)
     }
 
     companion object {
@@ -222,9 +219,5 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback,
             putExtra(MYRIAD_FLOW_ID, myriadFlowId)
             putExtra(TIMEOUT_IN_MS, timeoutInMs)
         }
-
-
     }
-
-
 }
