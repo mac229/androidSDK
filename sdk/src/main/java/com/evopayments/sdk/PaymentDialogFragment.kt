@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -190,10 +189,6 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
                 redirectDialogFragment?.dismiss()
             }
         }
-    }
-
-    interface OnDismissListener {
-        fun onDismiss()
     }
 
     companion object {
