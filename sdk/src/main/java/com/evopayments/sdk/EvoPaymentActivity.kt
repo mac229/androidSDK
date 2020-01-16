@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.evopayments.evocashierlib.BuildConfig
+import com.evopayments.evocashierlib.R
 import com.google.android.gms.wallet.AutoResolveHelper
 import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.Wallet
@@ -42,7 +43,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
     private val timeoutInMs by lazy {
         intent.getLongExtra(
             TIMEOUT_IN_MS,
-            PaymentDialogFragment.DEFAULT_TIMEOUT
+            PaymentFragment.DEFAULT_TIMEOUT
         )
     }
 
@@ -70,9 +71,10 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
             WindowManager.LayoutParams.FLAG_SECURE
         )
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_evo_payment)
 
         if (savedInstanceState == null) {
-            val dialogFragment = PaymentDialogFragment.newInstance(
+            val dialogFragment = PaymentFragment.newInstance(
                 merchantId,
                 cashierUrl,
                 token,
@@ -83,7 +85,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
             supportFragmentManager
                 .beginTransaction()
                 .addToBackStack(null)
-                .add(dialogFragment, PaymentDialogFragment.TAG)
+                .add(R.id.container, dialogFragment, PaymentFragment.TAG)
                 .commit()
         }
     }
@@ -161,7 +163,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
 
     private fun onGooglePaymentSuccess(data: Intent?) {
         val fragment = supportFragmentManager
-            .findFragmentByTag(PaymentDialogFragment.TAG) as PaymentDialogFragment
+            .findFragmentByTag(PaymentFragment.TAG) as PaymentFragment
         fragment.onGooglePaymentSuccess(data)
     }
 

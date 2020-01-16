@@ -1,7 +1,6 @@
 package com.evopayments.sdk
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,15 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
-import androidx.fragment.app.DialogFragment
-import com.evopayments.evocashierlib.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.evopayments.sdk.redirect.RedirectCallback
 import com.evopayments.sdk.redirect.WebDialogFragment
 import com.google.android.gms.wallet.PaymentDataRequest
 import java.util.concurrent.TimeUnit
 
-@Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity. It will be removed in the next version.")
-class PaymentDialogFragment : DialogFragment(), RedirectCallback {
+class PaymentFragment : Fragment(), RedirectCallback {
 
     private lateinit var paymentCallback: EvoPaymentsCallback
     private var onDismissCallback: OnDismissListener? = null
@@ -38,10 +36,6 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         super.onAttach(context)
         paymentCallback = getListenerOrThrowException()
         onDismissCallback = getListener()
-    }
-
-    override fun getTheme(): Int {
-        return R.style.PaymentDialogStyle
     }
 
     override fun onCreateView(
@@ -86,12 +80,10 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     private fun onSessionExpired() {
         paymentCallback.onSessionExpired()
-        dismiss()
     }
 
     override fun onWebViewError() {
         paymentCallback.onPaymentUndetermined()
-        dismiss()
     }
 
     override fun onPause() {
@@ -114,11 +106,6 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         webView.evaluateJavascript("window.JSInterface.onGPayTokenReceived($token);") { /* there's no result */ }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        onDismissCallback?.onDismiss()
-    }
-
     private inner class JSInterface {
         private val handler = Handler(Looper.getMainLooper())
 
@@ -134,7 +121,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         fun paymentStarted() {
             handler.post {
                 paymentCallback.onPaymentStarted()
-                dismiss()
+                fragmentManager?.popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
@@ -142,7 +129,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         fun paymentSuccessful() {
             handler.post {
                 paymentCallback.onPaymentSuccessful()
-                dismiss()
+                fragmentManager?.popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
@@ -150,7 +137,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         fun paymentCancelled() {
             handler.post {
                 paymentCallback.onPaymentCancelled()
-                dismiss()
+                fragmentManager?.popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
@@ -158,7 +145,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         fun paymentFailed() {
             handler.post {
                 paymentCallback.onPaymentFailed()
-                dismiss()
+                fragmentManager?.popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
@@ -166,7 +153,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
         fun paymentUndetermined() {
             handler.post {
                 paymentCallback.onPaymentUndetermined()
-                dismiss()
+                fragmentManager?.popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
@@ -193,7 +180,7 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
     companion object {
 
-        val TAG: String = PaymentDialogFragment::class.java.simpleName
+        val TAG: String = PaymentFragment::class.java.simpleName
 
         private const val MERCHANT_ID = "merchantId"
         private const val TOKEN = "token"
@@ -206,14 +193,13 @@ class PaymentDialogFragment : DialogFragment(), RedirectCallback {
 
         internal val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(10)
 
-        @Deprecated("PaymentDialogFragment is deprecated in favor of EvoPaymentActivity")
         fun newInstance(
             merchantId: String,
             cashierUrl: String,
             token: String,
             myriadFlowId: String,
             timeoutInMs: Long = DEFAULT_TIMEOUT
-        ) = PaymentDialogFragment().apply {
+        ) = PaymentFragment().apply {
             arguments = Bundle().apply {
                 putString(EXTRA_MERCHANT_ID, merchantId)
                 putString(EXTRA_URL, cashierUrl)
