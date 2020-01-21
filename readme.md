@@ -52,6 +52,7 @@ class DemoTokenParameters(  //example values
 For more information check `fetchToken()` method in `MainActivity.kt`.
 ​
 ​
+
 2. Then to display web page via SDK, call this method from your activity:
 ​
 **Kotlin**
