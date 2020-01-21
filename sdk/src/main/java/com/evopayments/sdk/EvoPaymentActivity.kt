@@ -89,51 +89,31 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
                 .commit()
         }
     }
-
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
     override fun onPaymentStarted() {
         isPaymentStarted = true
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentSuccessful() {
         finishWithResult(PAYMENT_SUCCESSFUL)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentCancelled() {
         finishWithResult(PAYMENT_CANCELED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentFailed() {
         finishWithResult(PAYMENT_FAILED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentUndetermined() {
         finishWithResult(PAYMENT_UNDETERMINED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onSessionExpired() {
         finishWithResult(PAYMENT_SESSION_EXPIRED)
     }
