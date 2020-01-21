@@ -17,6 +17,7 @@ dependencies {
 ```
 [![JitPack](https://img.shields.io/jitpack/v/github/intelligentpayments/androidSDK?color=brightgreen&label=JitPack&style=plastic)](https://jitpack.io/#intelligentpayments/androidSDK)
 ​
+
 Replace `<latest_version>` with latest library version from  JitPack
 ​
 ### Update
