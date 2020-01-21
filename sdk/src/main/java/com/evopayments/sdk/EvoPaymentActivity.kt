@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.evopayments.evocashierlib.BuildConfig
+import com.evopayments.evocashierlib.R
 import com.google.android.gms.wallet.AutoResolveHelper
 import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.Wallet
@@ -42,7 +43,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
     private val timeoutInMs by lazy {
         intent.getLongExtra(
             TIMEOUT_IN_MS,
-            PaymentDialogFragment.DEFAULT_TIMEOUT
+            PaymentFragment.DEFAULT_TIMEOUT
         )
     }
 
@@ -72,7 +73,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            val dialogFragment = PaymentDialogFragment.newInstance(
+            val dialogFragment = PaymentFragment.newInstance(
                 merchantId,
                 cashierUrl,
                 token,
@@ -83,55 +84,35 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
             supportFragmentManager
                 .beginTransaction()
                 .addToBackStack(null)
-                .add(dialogFragment, PaymentDialogFragment.TAG)
+                .add(android.R.id.content, dialogFragment, PaymentFragment.TAG)
                 .commit()
         }
     }
-
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
     override fun onPaymentStarted() {
         isPaymentStarted = true
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentSuccessful() {
         finishWithResult(PAYMENT_SUCCESSFUL)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentCancelled() {
         finishWithResult(PAYMENT_CANCELED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentFailed() {
         finishWithResult(PAYMENT_FAILED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onPaymentUndetermined() {
         finishWithResult(PAYMENT_UNDETERMINED)
     }
 
-    @Deprecated(
-        "This method is public only for a short amount of time. It will be removed in the next release",
-        level = DeprecationLevel.ERROR
-    )
+
     override fun onSessionExpired() {
         finishWithResult(PAYMENT_SESSION_EXPIRED)
     }
@@ -161,7 +142,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
 
     private fun onGooglePaymentSuccess(data: Intent?) {
         val fragment = supportFragmentManager
-            .findFragmentByTag(PaymentDialogFragment.TAG) as PaymentDialogFragment
+            .findFragmentByTag(PaymentFragment.TAG) as PaymentFragment
         fragment.onGooglePaymentSuccess(data)
     }
 
