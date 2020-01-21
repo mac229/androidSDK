@@ -71,7 +71,6 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
             WindowManager.LayoutParams.FLAG_SECURE
         )
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_evo_payment)
 
         if (savedInstanceState == null) {
             val dialogFragment = PaymentFragment.newInstance(
@@ -85,7 +84,7 @@ class EvoPaymentActivity : AppCompatActivity(), EvoPaymentsCallback, OnDismissLi
             supportFragmentManager
                 .beginTransaction()
                 .addToBackStack(null)
-                .add(R.id.container, dialogFragment, PaymentFragment.TAG)
+                .add(android.R.id.content, dialogFragment, PaymentFragment.TAG)
                 .commit()
         }
     }
